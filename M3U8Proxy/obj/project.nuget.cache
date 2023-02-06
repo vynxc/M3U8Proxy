@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "dgSpecHash": "CHmtZBW4Sr5yfzg3NYSgJFYm2LrFgmnJnLAhjZLAJrjKC/NX28+X7LNCn1sw9oFawD1tNqUWQPGGQMOhmuCvCw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\chayc\\source\\repos\\M3U8Proxy\\M3U8Proxy\\M3U8Proxy.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\chayc\\.nuget\\packages\\aspnetcore.proxy\\4.4.0\\aspnetcore.proxy.4.4.0.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\6.0.0\\microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\npgsql\\7.0.1\\npgsql.7.0.1.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\restsharp\\106.5.0\\restsharp.106.5.0.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512",
+    "C:\\Users\\chayc\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

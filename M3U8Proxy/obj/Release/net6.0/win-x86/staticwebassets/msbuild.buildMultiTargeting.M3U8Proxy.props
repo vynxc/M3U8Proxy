@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\M3U8Proxy.props" />
+</Project>

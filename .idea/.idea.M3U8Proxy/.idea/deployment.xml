@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="Plesk vnxservers" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="Plesk vnxservers">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/M3U8Proxy.sln" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/M3U8Proxy/M3U8Proxy.csproj" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/M3U8Proxy/Controllers/Proxy.cs" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/M3U8Proxy/Properties/launchSettings.json" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/M3U8Proxy/obj/Release/net6.0/M3U8Proxy.GlobalUsings.g.cs" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/M3U8Proxy/obj/Release/net6.0/M3U8Proxy.AssemblyInfo.cs" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/M3U8Proxy/obj/Release/net6.0/M3U8Proxy.GeneratedMSBuildEditorConfig.editorconfig" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/M3U8Proxy/Program.cs" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/M3U8Proxy/appsettings.Development.json" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/M3U8Proxy/appsettings.json" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$/../../../../../Program Files/dotnet/sdk/7.0.102/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_6_default.editorconfig" web=" /httpdocs " />
+            <mapping local="$PROJECT_DIR$" web=" /httpdocs " />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

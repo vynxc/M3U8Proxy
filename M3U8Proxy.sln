@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M3U8Proxy", "M3U8Proxy\M3U8Proxy.csproj", "{5AEF13F7-52D2-4E6A-BDD5-6DEF846F9983}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5AEF13F7-52D2-4E6A-BDD5-6DEF846F9983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AEF13F7-52D2-4E6A-BDD5-6DEF846F9983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AEF13F7-52D2-4E6A-BDD5-6DEF846F9983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AEF13F7-52D2-4E6A-BDD5-6DEF846F9983}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C3E0E539-BF7E-44FB-9AD3-5F05E6AF5562}
+	EndGlobalSection
+EndGlobal

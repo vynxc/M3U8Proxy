@@ -1,0 +1,40 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push request event for the master branch
+  push:    
+    branches: [master]
+
+jobs:
+  deploy:
+    # Our previously created self-hosted runner
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        dotnet: ["6.0.x"]
+
+    # A sequence of tasks that will execute as part of the job
+    steps:
+      # Checks out repository so our job can access it
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      # We will output publish files to the folder we previously created
+      - name: Publish
+        run: dotnet publish -c Release -o /var/www/m3u8-proxy
+        
+      - name: Restart the app
+        run: |
+          export XDG_RUNTIME_DIR=/run/user/$(id -u)
+          systemctl --user restart m3u8-proxy.service  

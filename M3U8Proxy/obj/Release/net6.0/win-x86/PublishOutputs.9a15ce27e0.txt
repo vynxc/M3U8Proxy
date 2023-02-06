@@ -1,0 +1,15 @@
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\M3U8Proxy.exe
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\appsettings.Development.json
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\appsettings.json
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\M3U8Proxy.deps.json
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\M3U8Proxy.runtimeconfig.json
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\M3U8Proxy.pdb
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\AspNetCore.Proxy.dll
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\Microsoft.OpenApi.dll
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\Newtonsoft.Json.dll
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\Npgsql.dll
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\RestSharp.dll
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\chayc\source\repos\M3U8Proxy\M3U8Proxy\bin\Release\net6.0\win-x86\publish\M3U8Proxy.dll

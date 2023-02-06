@@ -1,0 +1,15 @@
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\M3U8Proxy.exe
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\appsettings.Development.json
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\appsettings.json
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\M3U8Proxy.dll
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\M3U8Proxy.deps.json
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\M3U8Proxy.runtimeconfig.json
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\M3U8Proxy.pdb
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\AspNetCore.Proxy.dll
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\Microsoft.OpenApi.dll
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\Newtonsoft.Json.dll
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\Npgsql.dll
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\RestSharp.dll
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\chayc\AppData\Local\Temp\rider-publish9912903185838423585\Swashbuckle.AspNetCore.SwaggerUI.dll
