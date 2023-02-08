@@ -142,8 +142,8 @@ public class Proxy : Controller
 
         //get base url
         var baseUrl =
-            $"{m3U8Uri.GetLeftPart(UriPartial.Authority)}{m3U8Uri.AbsolutePath.Substring(0, m3U8Uri.AbsolutePath.Length - fileName.Length)}"
-            !;
+            $"{m3U8Uri.GetLeftPart(UriPartial.Authority)}{m3U8Uri.AbsolutePath.Substring(0, m3U8Uri.AbsolutePath.Length - fileName.Length)}"!;
+            
 
         //split response content into lines
         var lines = response.Content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
@@ -159,9 +159,8 @@ public class Proxy : Controller
 
                 //if base url does not end with /
                 if (baseUrl!.EndsWith("/"))
-                    baseUrl = baseUrl.Append('/').ToString();
-
-
+                     baseUrl = baseUrl + "/";
+                
                 //create absolute url
                 var absoluteUrl = baseUrl + lines[i];
 
