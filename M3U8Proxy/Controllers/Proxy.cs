@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using AspNetCore.Proxy;
@@ -134,17 +135,8 @@ public class Proxy : Controller
 
     private async Task<string> FixUrlsInM3U8File(IRestResponse response, string url)
     {
-        //create url from string
-        var m3U8Uri = new Uri(url);
-
-        //get filename from url
-        var fileName = Path.GetFileName(m3U8Uri.AbsolutePath);
-
-        //get base url
-        var baseUrl =
-            $"{m3U8Uri.GetLeftPart(UriPartial.Authority)}{m3U8Uri.AbsolutePath.Substring(0, m3U8Uri.AbsolutePath.Length - fileName.Length)}"!;
-            
-
+        string absoluteUrl = "";
+        
         //split response content into lines
         var lines = response.Content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
@@ -153,16 +145,26 @@ public class Proxy : Controller
             //if line does not start with http, # or is empty
             if (!lines[i].StartsWith("http") && !lines[i].StartsWith("#") && !string.IsNullOrWhiteSpace(lines[i]))
             {
+                
                 //if line does not start with /
                 if (lines[i].StartsWith("/"))
-                    lines[i] = lines[i][..1];
+                {
+                    string parameters = Regex.Match(url, @"\?.+").Value;
+                    var Uri = new Uri(url);
+                    
+                    string baseUrl = string.Format("{0}://{1}", Uri.Scheme, Uri.Authority);
+                    absoluteUrl = baseUrl + lines[i] + parameters;
 
-                //if base url does not end with /
-                if (baseUrl!.EndsWith("/"))
-                     baseUrl = baseUrl + "/";
-                
+                }
+                else
+                {
+                    int index = url.LastIndexOf('/');
+                    string parameters = Regex.Match(url, @"\?.+").Value;
+                    absoluteUrl = url.Substring(0, index + 1) + lines[i] +parameters;
+                }
+                Debug.WriteLine(absoluteUrl);
+
                 //create absolute url
-                var absoluteUrl = baseUrl + lines[i];
 
                 //replace line with absolute url
                 lines[i] = absoluteUrl;
@@ -171,7 +173,6 @@ public class Proxy : Controller
         //combine lines into string
         return string.Join(Environment.NewLine, lines);
     }
-
     private void RemoveBlockedHeaders(IRestResponse response)
     {
         foreach (var header in _corsBlockedHeaders)
@@ -199,6 +200,7 @@ public class Proxy : Controller
         foreach (var header in headersDictionary) request.AddHeader(header.Key, header.Value);
         return client.Execute(request);
     }
+//create a method that turns this https://s862.imacdn.com/m6/playlist/7ad4e82cd5780e481156575aca43843e/7ad4e82cd5780e481156575aca43843e.m3u8?hash=l2VWnJdd-lzIeNiNTfh8KQ&expire=1675932057 into this https://s862.imacdn.com/m6/playlist/7ad4e82cd5780e481156575aca43843e/{custom path}?hash=l2VWnJdd-lzIeNiNTfh8KQ&expire=1675932057 
 
     private void AddResponseHeaders(IRestResponse response)
     {
