@@ -238,6 +238,7 @@ public class Proxy : Controller
         "Access-Control-Request-Headers",
         "Origin",
         "Referer",
+        "Server",
         "x-cache",
         "via",
         "x-amz-cf-pop",
