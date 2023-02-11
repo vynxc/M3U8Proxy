@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Extensions;
 
 namespace M3U8Proxy.Controllers;
 
@@ -36,6 +38,7 @@ public class Proxy : Controller
                 //remove cors blocked headers
                 .WithBeforeSend((c, hrm) =>
                 {
+
                     foreach (var header in _corsBlockedHeaders)
                     {
                         var headerToRemove =
@@ -83,13 +86,13 @@ public class Proxy : Controller
             return Task.FromResult(0);
         }
     }
-
+    
     [HttpGet("m3u8/{url}/{headers?}")]
     public async Task<IActionResult> GetM3U8(string url, string? headers = "{}")
     {
-        var hasKeyword = false;
+        var isPlaylistM3U8 = false;
         var listOfKeywords = new List<string> { "#EXT-X-STREAM-INF", "#EXT-X-I-FRAME-STREAM-INF" };
-        var baseUrl = "https://proxy.vnxservers.com/";
+        var baseUrl = "https://localhost:7198/";
         var proxyUrl = baseUrl + "proxy/";
         var m3U8Url = baseUrl + "proxy/m3u8/";
 
@@ -110,15 +113,25 @@ public class Proxy : Controller
 
             //make request
             var response = MakeRequest(url, headersDictionary!);
-
+            
+            //set status code
+            HttpContext.Response.StatusCode = (int) response.StatusCode;
+            
+            //set response if failed
+            if(response.StatusCode != HttpStatusCode.OK)
+                return BadRequest(response.Content);
+            
             RemoveBlockedHeaders(response);
             AddResponseHeaders(response);
 
             //validate response
             var content = await FixUrlsInM3U8File(response, url);
+            
+            //check for type of m3u8 file
             if (listOfKeywords.Any(keyword => content.Contains(keyword)))
-                hasKeyword = true;
-            var modifiedContent = ModifyContent(content, hasKeyword ? m3U8Url : proxyUrl, headers);
+                isPlaylistM3U8 = true;
+            
+            var modifiedContent = ModifyContent(content, isPlaylistM3U8 ? m3U8Url : proxyUrl, headers);
 
             //return file
             return File(Encoding.UTF8.GetBytes(modifiedContent), "application/vnd.apple.mpegurl",
@@ -200,7 +213,6 @@ public class Proxy : Controller
         foreach (var header in headersDictionary) request.AddHeader(header.Key, header.Value);
         return client.Execute(request);
     }
-//create a method that turns this https://s862.imacdn.com/m6/playlist/7ad4e82cd5780e481156575aca43843e/7ad4e82cd5780e481156575aca43843e.m3u8?hash=l2VWnJdd-lzIeNiNTfh8KQ&expire=1675932057 into this https://s862.imacdn.com/m6/playlist/7ad4e82cd5780e481156575aca43843e/{custom path}?hash=l2VWnJdd-lzIeNiNTfh8KQ&expire=1675932057 
 
     private void AddResponseHeaders(IRestResponse response)
     {
