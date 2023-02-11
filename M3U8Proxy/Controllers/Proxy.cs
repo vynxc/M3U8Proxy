@@ -22,76 +22,6 @@ public class Proxy : Controller
     
     
     
-    [HttpGet("mp4/{url}")]
-    public Task GetProxyMp4(string url)
-    {
-        try
-        {
-            //decode url and headers
-            url = HttpUtility.UrlDecode(url);
-            var headers = "{\"Host\":\"marin.moe\",\"Cookie\":\"__ddgid_=; __ddg2_=; __ddg1_=;\"}";
-            //convert headers to dictionary
-            var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
-
-            var options = HttpProxyOptionsBuilder.Instance
-                //disable forwarded headers
-                .WithShouldAddForwardedHeaders(false)
-
-                //remove cors blocked headers
-                .WithBeforeSend((c, hrm) =>
-                {
-
-                    // foreach (var header in _corsBlockedHeaders)
-                    // {
-                    //     var headerToRemove =
-                    //         hrm.Headers.FirstOrDefault(h =>
-                    //             h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
-                    //
-                    //     if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
-                    // }
-                    //
-                    // if (headersDictionary != null)
-                    //     foreach (var header in headersDictionary)
-                    //     {
-                    //         var headerToRemove =
-                    //             hrm.Headers.FirstOrDefault(h =>
-                    //                 h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key;
-                    //         if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
-                    //         hrm.Headers.Add(header.Key, header.Value);
-                    //     }
-                    //
-                    //
-                    
-
-                    return Task.CompletedTask;
-                })
-                //handle errors
-                .WithHandleFailure(async (context, e) =>
-                {
-                    context.Response.StatusCode = context.Response.StatusCode;
-                    await context.Response.WriteAsync(e.Message);
-                })
-                //remove cors blocked headers
-                .WithAfterReceive((c, hrm) =>
-                {
-                    // foreach (var header in _corsBlockedHeaders) hrm.Headers.Remove(header.ToLower());
-
-                    return Task.CompletedTask;
-                })
-                .Build();
-            //return proxy
-            return this.HttpProxyAsync(url, options);
-        }
-        catch (Exception e)
-        {
-            //handle errors
-            HttpContext.Response.StatusCode = 400;
-            HttpContext.Response.ContentType = "application/json";
-            HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(e.Message));
-            return Task.FromResult(0);
-        }
-    }
-    
     
     [HttpGet("{url}/{headers?}")]
     public Task GetProxy(string url, string? headers = "{}")
@@ -169,7 +99,7 @@ public class Proxy : Controller
     {
         var isPlaylistM3U8 = false;
         var listOfKeywords = new List<string> { "#EXT-X-STREAM-INF", "#EXT-X-I-FRAME-STREAM-INF" };
-        var baseUrl = "https://localhost:7198/";
+        var baseUrl = "https://proxy.vnxservers.com/";
         var proxyUrl = baseUrl + "proxy/";
         var m3U8Url = baseUrl + "proxy/m3u8/";
 
