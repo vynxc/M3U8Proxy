@@ -6,6 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <PlatformTarget>AnyCPU</PlatformTarget>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="AspNetCore.Proxy" Version="4.4.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
