@@ -41,26 +41,26 @@ public class Proxy : Controller
                 .WithBeforeSend((c, hrm) =>
                 {
 
-                    foreach (var header in _corsBlockedHeaders)
-                    {
-                        var headerToRemove =
-                            hrm.Headers.FirstOrDefault(h =>
-                                h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
-
-                        if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
-                    }
-
-                    if (headersDictionary != null)
-                        foreach (var header in headersDictionary)
-                        {
-                            var headerToRemove =
-                                hrm.Headers.FirstOrDefault(h =>
-                                    h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key;
-                            if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
-                            hrm.Headers.Add(header.Key, header.Value);
-                        }
-                    
-                    
+                    // foreach (var header in _corsBlockedHeaders)
+                    // {
+                    //     var headerToRemove =
+                    //         hrm.Headers.FirstOrDefault(h =>
+                    //             h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
+                    //
+                    //     if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
+                    // }
+                    //
+                    // if (headersDictionary != null)
+                    //     foreach (var header in headersDictionary)
+                    //     {
+                    //         var headerToRemove =
+                    //             hrm.Headers.FirstOrDefault(h =>
+                    //                 h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key;
+                    //         if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
+                    //         hrm.Headers.Add(header.Key, header.Value);
+                    //     }
+                    //
+                    //
                     
 
                     return Task.CompletedTask;
@@ -74,7 +74,7 @@ public class Proxy : Controller
                 //remove cors blocked headers
                 .WithAfterReceive((c, hrm) =>
                 {
-                    foreach (var header in _corsBlockedHeaders) hrm.Headers.Remove(header.ToLower());
+                    // foreach (var header in _corsBlockedHeaders) hrm.Headers.Remove(header.ToLower());
 
                     return Task.CompletedTask;
                 })
