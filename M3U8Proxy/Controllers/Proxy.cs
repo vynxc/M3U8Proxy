@@ -21,7 +21,11 @@ public class Proxy : Controller
 {
     
     
-    
+    [HttpGet("hello")]
+    public string Hello()
+    {
+        return "Hello World!";
+    }
     
     [HttpGet("{url}/{headers?}")]
     public Task GetProxy(string url, string? headers = "{}")
