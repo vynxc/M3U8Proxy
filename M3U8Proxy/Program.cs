@@ -5,6 +5,8 @@ builder.Services.AddControllers();
 var MyAllowSpecificOrigins = "corsPolicy";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 builder.Services.AddProxies();
 builder.Services.AddCors(options =>
 {
@@ -19,6 +21,7 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 app.UseCors(MyAllowSpecificOrigins);
+app.MapReverseProxy();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
