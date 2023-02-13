@@ -11,12 +11,11 @@ builder.Services.AddLettuceEncrypt();
 builder.WebHost.UseKestrel(k=>{
     
     var appServices = k.ApplicationServices;
-    k.Listen(
-        IPAddress.Any, 443,
-        o => o.UseHttps(h =>
-        {
-            h.UseLettuceEncrypt(appServices);
-        }));
+    k.ConfigureHttpsDefaults(h =>
+    {
+        h.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
+        h.UseLettuceEncrypt(appServices);
+    });
 });
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
