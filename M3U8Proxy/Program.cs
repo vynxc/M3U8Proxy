@@ -7,19 +7,6 @@ builder.Services.AddControllers();
 var MyAllowSpecificOrigins = "corsPolicy";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddLettuceEncrypt();
-builder.WebHost.UseKestrel(k=>{
-    
-    var appServices = k.ApplicationServices;
-    k.ConfigureHttpsDefaults(h =>
-    {
-        h.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
-        h.UseLettuceEncrypt(appServices);
-    });
-});
-builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-builder.Services.AddProxies();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(MyAllowSpecificOrigins,
@@ -33,8 +20,6 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 app.UseCors(MyAllowSpecificOrigins);
-//app.MapReverseProxy();
-
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
