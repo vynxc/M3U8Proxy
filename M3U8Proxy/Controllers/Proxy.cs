@@ -27,7 +27,7 @@ public class Proxy : Controller
     }
     
     [HttpGet("{url}/{headers?}")]
-    public Task GetProxy(string url, string headers = "{}")
+    public Task GetProxy(string url, string? headers = "{}")
     {
         try
         {
@@ -98,7 +98,7 @@ public class Proxy : Controller
     }
     
     [HttpGet("m3u8/{url}/{headers?}")]
-    public async Task<IActionResult> GetM3U8(string url, string headers = "{}")
+    public async Task<IActionResult> GetM3U8(string url, string? headers = "{}")
     {
         var isPlaylistM3U8 = false;
         var listOfKeywords = new List<string> { "#EXT-X-STREAM-INF", "#EXT-X-I-FRAME-STREAM-INF" };
