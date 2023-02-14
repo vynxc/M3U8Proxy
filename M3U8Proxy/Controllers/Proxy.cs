@@ -18,8 +18,6 @@ namespace M3U8Proxy.Controllers;
 public class Proxy : Controller
 
 {
-    
-    
     [HttpGet("hello")]
     public string Hello()
     {
