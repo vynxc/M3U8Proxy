@@ -26,7 +26,7 @@ public class Proxy : Controller
     
     [HttpGet("{url}/{headers?}")]
     public Task GetProxy(string url, string? headers = "{}")
-    {
+    {  
         try
         {
             //decode url and headers
