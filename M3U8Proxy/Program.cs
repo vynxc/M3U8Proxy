@@ -9,11 +9,12 @@ const string myAllowSpecificOrigins = "corsPolicy";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLettuceEncrypt();
-
-builder.WebHost.UseUrls("http://proxy.vnxservers.com:80", "https://proxy.vnxservers.com:5000");
+builder.Services.AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+builder.WebHost.UseUrls("https://proxy.vnxservers.com:443");
 builder.WebHost.ConfigureKestrel(kestre =>
 {
-    kestre.ListenAnyIP(443, listenOptions =>
+    kestre.ListenAnyIP(5000, listenOptions =>
     {
         listenOptions.UseHttps(h =>
         {
@@ -37,7 +38,7 @@ var app = builder.Build();
 
 app.UseCors(myAllowSpecificOrigins);
 app.UseSwagger();
-
+app.MapReverseProxy();
 app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
