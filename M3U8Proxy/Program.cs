@@ -14,7 +14,7 @@ builder.WebHost.UseUrls("http://proxy.vnxservers.com:80", "https://proxy.vnxserv
 builder.WebHost.ConfigureKestrel(kestre =>
 {
     kestre.ListenAnyIP(80);
-    kestre.ListenAnyIP(5000, listenOptions =>
+    kestre.ListenAnyIP(443, listenOptions =>
     {
         listenOptions.UseHttps(h =>
         {
