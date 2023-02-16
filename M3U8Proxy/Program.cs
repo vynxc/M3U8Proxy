@@ -15,7 +15,6 @@ builder.WebHost.ConfigureKestrel(kestre =>
 {
     kestre.ListenAnyIP(443, listenOptions =>
     {
-        
         listenOptions.UseHttps(h =>
         {
             h.UseLettuceEncrypt(kestre.ApplicationServices);
