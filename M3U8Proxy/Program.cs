@@ -8,6 +8,7 @@ builder.Services.AddProxies();
 const string myAllowSpecificOrigins = "corsPolicy";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddLettuceEncrypt();
 
 builder.WebHost.ConfigureKestrel(kestre =>
 {
@@ -32,8 +33,10 @@ builder.Services.AddCors(options =>
         });
 });
 var app = builder.Build();
+
 app.UseCors(myAllowSpecificOrigins);
 app.UseSwagger();
+
 app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
