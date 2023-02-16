@@ -10,10 +10,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLettuceEncrypt();
 
+builder.WebHost.UseUrls("http://proxy.vnxservers.com:5000", "https://proxy.vnxservers.com:5001");
 builder.WebHost.ConfigureKestrel(kestre =>
 {
     kestre.ListenAnyIP(5001, listenOptions =>
     {
+        
         listenOptions.UseHttps(h =>
         {
             h.UseLettuceEncrypt(kestre.ApplicationServices);
