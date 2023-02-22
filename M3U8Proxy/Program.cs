@@ -30,8 +30,8 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
-app.UseCors(myAllowSpecificOrigins);
 app.UseRouting();
+app.UseCors(myAllowSpecificOrigins);
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapReverseProxy();
