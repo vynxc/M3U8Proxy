@@ -12,9 +12,11 @@ builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSecti
 builder.Services.AddLettuceEncrypt();
 builder.WebHost.ConfigureKestrel(k =>
 {
+    k.ListenAnyIP(80);
     k.ListenAnyIP(443, listenOptions =>
     {
         listenOptions.UseHttps();
+
     });
 });
 builder.Services.AddCors(options =>
@@ -38,6 +40,7 @@ app.UseEndpoints(endpoints =>
 });
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.MapControllers();
 app.Run();
