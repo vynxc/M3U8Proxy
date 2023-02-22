@@ -35,8 +35,10 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+app.UseHsts();
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
 app.UseEndpoints(endpoints =>
