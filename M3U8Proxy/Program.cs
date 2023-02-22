@@ -10,13 +10,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 builder.Services.AddLettuceEncrypt();
-// builder.WebHost.ConfigureKestrel(k =>
-// {
-//     k.ListenAnyIP(443, listenOptions =>
-//     {
-//         listenOptions.UseHttps();
-//     });
-// });
+builder.WebHost.ConfigureKestrel(k =>
+{
+    k.ListenAnyIP(443, listenOptions =>
+    {
+        listenOptions.UseHttps();
+    });
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(myAllowSpecificOrigins,
