@@ -19,7 +19,7 @@ builder.WebHost.ConfigureKestrel(k =>
     k.ListenAnyIP(443, listenOptions =>
     {
         listenOptions.UseHttps();
-
+        
     });
 });
 builder.Services.AddCors(options =>
@@ -33,17 +33,10 @@ builder.Services.AddCors(options =>
                 
         });
 });
-if (!builder.Environment.IsDevelopment())
-{
-    builder.Services.AddHttpsRedirection(options =>
-    {
-        options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
-        options.HttpsPort = 443;
-    });
-}
+
 var app = builder.Build();
 
-
+app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
 app.UseEndpoints(endpoints =>
