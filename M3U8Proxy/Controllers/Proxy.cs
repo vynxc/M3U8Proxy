@@ -16,7 +16,6 @@ namespace M3U8Proxy.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class Proxy : Controller
-
 {
     [HttpGet("hello")]
     public string Hello()

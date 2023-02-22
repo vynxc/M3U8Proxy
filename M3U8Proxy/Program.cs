@@ -8,9 +8,18 @@ builder.Services.AddProxies();
 const string myAllowSpecificOrigins = "corsPolicy";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddLettuceEncrypt();
-builder.WebHost.UseUrls("https://proxy.vnxservers.com:443");
-
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    builder.Services.AddLettuceEncrypt();
+    builder.WebHost.ConfigureKestrel(k =>
+    {
+        k.ListenAnyIP(443, listenOptions =>
+        {
+            listenOptions.UseHttps();
+        });
+    });
+}
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(myAllowSpecificOrigins,
