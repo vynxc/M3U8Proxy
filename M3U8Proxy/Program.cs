@@ -31,9 +31,13 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseCors(myAllowSpecificOrigins);
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapReverseProxy();
+});
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllers();
 app.Run();
