@@ -8,18 +8,15 @@ builder.Services.AddProxies();
 const string myAllowSpecificOrigins = "corsPolicy";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-if (!builder.Environment.IsDevelopment())
+builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+builder.Services.AddLettuceEncrypt();
+builder.WebHost.ConfigureKestrel(k =>
 {
-    builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-    builder.Services.AddLettuceEncrypt();
-    builder.WebHost.ConfigureKestrel(k =>
+    k.ListenAnyIP(443, listenOptions =>
     {
-        k.ListenAnyIP(443, listenOptions =>
-        {
-            listenOptions.UseHttps();
-        });
+        listenOptions.UseHttps();
     });
-}
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(myAllowSpecificOrigins,
