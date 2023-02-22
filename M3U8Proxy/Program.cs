@@ -10,8 +10,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 builder.Services.AddLettuceEncrypt();
+
+
 builder.WebHost.ConfigureKestrel(k =>
 {
+    
     k.ListenAnyIP(80);
     k.ListenAnyIP(443, listenOptions =>
     {
@@ -30,7 +33,16 @@ builder.Services.AddCors(options =>
                 
         });
 });
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHttpsRedirection(options =>
+    {
+        options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
+        options.HttpsPort = 443;
+    });
+}
 var app = builder.Build();
+
 
 app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
@@ -40,7 +52,6 @@ app.UseEndpoints(endpoints =>
 });
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.MapControllers();
 app.Run();
