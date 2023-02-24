@@ -69,7 +69,7 @@ public class Proxy : Controller
     }
     
     
-    [HttpGet("{url}/{headers?}")]
+    [HttpGet("{url}/{headers?}/{type?}")]
     public Task GetProxy(string url, string? headers = "{}")
     {  
         try
@@ -126,7 +126,7 @@ public class Proxy : Controller
         }
     }
 
-    [HttpGet("m3u8/{url?}/{headers?}")]
+    [HttpGet("m3u8/{url?}/{headers?}/{type?}")]
     public async Task<IActionResult> GetM3U8(string? url, string? headers = "{}")
     {
         var isPlaylistM3U8 = false;
