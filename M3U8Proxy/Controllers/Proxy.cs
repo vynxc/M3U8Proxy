@@ -24,9 +24,13 @@ public class Proxy : Controller
     }
     
     [HttpGet]
-    [Route("base/{*.*url}")] 
-    public Task ProxyTest([FromRoute]string url)
+    [Route("base/{**url}")] 
+    public Task ProxyTest(string url)
     {  
+        //get all the parameters and add them to the url
+        var query = Request.QueryString;
+        if (query.HasValue) url += query;
+        
         try
         {
            
