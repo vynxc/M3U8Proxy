@@ -24,7 +24,7 @@ public class Proxy : Controller
     }
     
     [HttpGet]
-    [Route("base/{**url}")] 
+    [Route("base/{***url}")] 
     public Task ProxyTest([FromRoute]string url)
     {  
         try
