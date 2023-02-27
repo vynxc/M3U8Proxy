@@ -1,14 +1,12 @@
 using AspNetCore.Proxy;
 using Microsoft.Net.Http.Headers;
+const string myAllowSpecificOrigins = "corsPolicy";
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddResponseCaching();
-
-const string myAllowSpecificOrigins = "corsPolicy";
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddProxies();
 
 if (!builder.Environment.IsDevelopment())
@@ -48,8 +46,6 @@ app.UseEndpoints(endpoints =>
     });
     if(!builder.Environment.IsDevelopment()) endpoints.MapReverseProxy();
 });
-app.UseSwagger();
-app.UseSwaggerUI();
 app.UseAuthentication();
 app.MapControllers();
 app.Run();
