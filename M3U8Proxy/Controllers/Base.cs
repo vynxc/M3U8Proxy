@@ -1,8 +1,5 @@
-﻿using System.Web;
-using AspNetCore.Proxy;
+﻿using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
-using M3U8Proxy.M3U8Parser;
-using M3U8Proxy.RequestHandler;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -11,22 +8,16 @@ namespace M3U8Proxy.Controllers;
 
 [EnableCors("corsPolicy")]
 [ApiController]
-[Route("[controller]")]
-public partial class Proxy : Controller
+public class Base : Controller
 {
-    private readonly M3U8Paser _paser = new();
-    private readonly ReqHandler _reqHandler = new();
-    [HttpGet("{url}/{headers?}/{type?}")]
-    
-    public Task GetProxy(string url, string? headers = "{}")
+    [HttpGet("/{**url}")]
+    public Task ProxyTest(string url)
     {
+        var query = Request.QueryString;
+        if (query.HasValue) url += query;
+
         try
         {
-            url = HttpUtility.UrlDecode(url);
-            headers = HttpUtility.UrlDecode(headers);
-
-            var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers!);
-
             var options = HttpProxyOptionsBuilder.Instance
                 .WithShouldAddForwardedHeaders(false)
                 .WithBeforeSend((c, hrm) =>
@@ -39,16 +30,6 @@ public partial class Proxy : Controller
 
                         if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
                     }
-
-                    if (headersDictionary != null)
-                        foreach (var header in headersDictionary)
-                        {
-                            var headerToRemove =
-                                hrm.Headers.FirstOrDefault(h =>
-                                    h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key;
-                            if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
-                            hrm.Headers.Add(header.Key, header.Value);
-                        }
 
                     return Task.CompletedTask;
                 })
@@ -68,6 +49,7 @@ public partial class Proxy : Controller
         }
         catch (Exception e)
         {
+            //handle errors
             HttpContext.Response.StatusCode = 400;
             HttpContext.Response.ContentType = "application/json";
             HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(e));

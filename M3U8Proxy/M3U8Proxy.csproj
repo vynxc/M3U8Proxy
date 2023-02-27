@@ -7,17 +7,17 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <PlatformTarget>AnyCPU</PlatformTarget>
+        <PlatformTarget>AnyCPU</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.Proxy" Version="4.4.0" />
-        <PackageReference Include="LettuceEncrypt" Version="1.2.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-        <PackageReference Include="Npgsql" Version="7.0.1" />
-        <PackageReference Include="RestSharp" Version="106.5.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-        <PackageReference Include="Yarp.ReverseProxy" Version="1.1.1" />
+        <PackageReference Include="AspNetCore.Proxy" Version="4.4.0"/>
+        <PackageReference Include="LettuceEncrypt" Version="1.2.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
+        <PackageReference Include="Npgsql" Version="7.0.1"/>
+        <PackageReference Include="RestSharp" Version="106.5.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+        <PackageReference Include="Yarp.ReverseProxy" Version="1.1.1"/>
     </ItemGroup>
 
 </Project>
