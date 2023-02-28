@@ -20,9 +20,9 @@ public partial class Proxy
 
         try
         {
-            url = HttpUtility.UrlDecode(url);
+            url = Uri.UnescapeDataString(url);
 
-            headers = HttpUtility.UrlDecode(headers);
+            headers = Uri.UnescapeDataString(headers);
 
             if (string.IsNullOrEmpty(url))
                 return BadRequest("URL missing or malformed.");

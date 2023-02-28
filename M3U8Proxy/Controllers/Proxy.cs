@@ -22,8 +22,8 @@ public partial class Proxy : Controller
     {
         try
         {
-            url = HttpUtility.UrlDecode(url);
-            headers = HttpUtility.UrlDecode(headers);
+            url = Uri.UnescapeDataString(url);
+            headers = Uri.UnescapeDataString(headers);
 
             var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers!);
 
