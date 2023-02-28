@@ -6,12 +6,14 @@ public partial class ReqHandler
 {
     public void RemoveBlockedHeaders(IRestResponse response)
     {
-        foreach (var header in _corsBlockedHeaders)
+        var headersToRemove = new HashSet<string>(_corsBlockedHeaders, StringComparer.InvariantCultureIgnoreCase);
+        for (int i = response.Headers.Count - 1; i >= 0; i--)
         {
-            var headerToRemove =
-                response.Headers.FirstOrDefault(h =>
-                    h.Name.Equals(header, StringComparison.InvariantCultureIgnoreCase));
-            if (headerToRemove != null) response.Headers.Remove(headerToRemove);
+            var header = response.Headers[i];
+            if (headersToRemove.Contains(header.Name))
+            {
+                response.Headers.RemoveAt(i);
+            }
         }
     }
 }

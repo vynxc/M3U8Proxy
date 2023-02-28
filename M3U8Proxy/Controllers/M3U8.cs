@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Text;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ public partial class Proxy
     [HttpGet("m3u8/{url?}/{headers?}/{type?}")]
     public IActionResult GetM3U8(string? url, string? headers = "{}")
     {
+        Stopwatch stopwatch = new();
         var isPlaylistM3U8 = false;
         var listOfKeywords = new List<string> { "#EXT-X-STREAM-INF", "#EXT-X-I-FRAME-STREAM-INF" };
         var baseUrl = "https://proxy.vnxservers.com/";
@@ -28,7 +30,6 @@ public partial class Proxy
                 return BadRequest("URL missing or malformed.");
 
             var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
-
             var response = _reqHandler.MakeRequest(url, headersDictionary!);
 
             HttpContext.Response.StatusCode = (int)response.StatusCode;
@@ -40,13 +41,12 @@ public partial class Proxy
             _reqHandler.AddResponseHeaders(response);
 
             var content = _paser.FixUrlsInM3U8File(response, url);
-
-
-            if (listOfKeywords.Any(keyword => content.Contains(keyword)))
-                isPlaylistM3U8 = true;
-
+            
+            isPlaylistM3U8 = content.IndexOf(listOfKeywords[0], StringComparison.OrdinalIgnoreCase) >= 0 
+                             || content.IndexOf(listOfKeywords[1], StringComparison.OrdinalIgnoreCase) >= 0;
+          
             var modifiedContent = _paser.ModifyContent(content, isPlaylistM3U8 ? m3U8Url : proxyUrl, headers);
-
+            
             return File(Encoding.UTF8.GetBytes(modifiedContent), "application/vnd.apple.mpegurl",
                 $"{url.Substring(0, 15)}.m3u8");
         }

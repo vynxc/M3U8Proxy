@@ -15,7 +15,6 @@ public class Base : Controller
     {
         var query = Request.QueryString;
         if (query.HasValue) url += query;
-
         try
         {
             var options = HttpProxyOptionsBuilder.Instance
