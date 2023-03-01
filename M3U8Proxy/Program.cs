@@ -11,12 +11,12 @@ builder.Services.AddProxies();
 
 if (!builder.Environment.IsDevelopment())
 {
-    builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-    builder.Services.AddLettuceEncrypt();
+    //builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    //builder.Services.AddLettuceEncrypt();
     builder.WebHost.ConfigureKestrel(k =>
     {
-        k.ListenAnyIP(80);
-        k.ListenAnyIP(443, listenOptions => { listenOptions.UseHttps(); });
+        // k.ListenAnyIP(80);
+        k.ListenAnyIP(5001, listenOptions => { listenOptions.UseHttps(); });
     });
 }
 
