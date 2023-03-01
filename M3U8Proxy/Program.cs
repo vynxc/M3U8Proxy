@@ -11,12 +11,9 @@ builder.Services.AddProxies();
 
 if (!builder.Environment.IsDevelopment())
 {
-    //builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-    //builder.Services.AddLettuceEncrypt();
     builder.WebHost.ConfigureKestrel(k =>
     {
         k.ListenAnyIP(5001);
-        //k.ListenAnyIP(443, listenOptions => { listenOptions.UseHttps(); });
     });
     
 }
@@ -34,8 +31,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-//app.UseHsts();
-//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
 app.UseResponseCaching();
@@ -45,7 +40,6 @@ app.UseEndpoints(endpoints =>
     {
         await context.Response.WriteAsync("Hello World!");
     });
-   // if(!builder.Environment.IsDevelopment()) endpoints.MapReverseProxy();
 });
 app.UseAuthentication();
 app.MapControllers();
