@@ -45,7 +45,7 @@ app.UseEndpoints(endpoints =>
     {
         await context.Response.WriteAsync("Hello World!");
     });
-    if(!builder.Environment.IsDevelopment()) endpoints.MapReverseProxy();
+   // if(!builder.Environment.IsDevelopment()) endpoints.MapReverseProxy();
 });
 app.UseAuthentication();
 app.MapControllers();
