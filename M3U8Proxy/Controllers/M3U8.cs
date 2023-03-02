@@ -35,7 +35,7 @@ public partial class Proxy
             if (response.StatusCode != HttpStatusCode.OK)
                 return BadRequest(JsonConvert.SerializeObject(response));
 
-            _reqHandler.RemoveBlockedHeaders(response);
+            ReqHandler.RemoveBlockedHeaders(response);
             ReqHandler.AddResponseHeaders(response);
 
             var content = M3U8Paser.FixUrls(response, url);
