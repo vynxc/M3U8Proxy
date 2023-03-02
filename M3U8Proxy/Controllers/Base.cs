@@ -19,7 +19,7 @@ public class Base : Controller
         {
             var options = HttpProxyOptionsBuilder.Instance
                 .WithShouldAddForwardedHeaders(false)
-                .WithBeforeSend((c, hrm) =>
+                .WithBeforeSend((_, hrm) =>
                 {
                     foreach (var header in CorsBlockedHeaders.List)
                     {
@@ -27,7 +27,7 @@ public class Base : Controller
                             hrm.Headers.FirstOrDefault(h =>
                                 h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
 
-                        if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
+                        hrm.Headers.Remove(headerToRemove);
                     }
 
                     return Task.CompletedTask;
@@ -37,7 +37,7 @@ public class Base : Controller
                     context.Response.StatusCode = context.Response.StatusCode;
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(e));
                 })
-                .WithAfterReceive((c, hrm) =>
+                .WithAfterReceive((_, hrm) =>
                 {
                     foreach (var header in CorsBlockedHeaders.List) hrm.Headers.Remove(header.ToLower());
 

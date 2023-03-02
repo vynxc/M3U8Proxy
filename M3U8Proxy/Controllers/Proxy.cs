@@ -1,5 +1,4 @@
-﻿using System.Web;
-using AspNetCore.Proxy;
+﻿using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
 using M3U8Proxy.M3U8Parser;
 using M3U8Proxy.RequestHandler;
@@ -16,20 +15,20 @@ public partial class Proxy : Controller
 {
     private readonly M3U8Paser _paser = new();
     private readonly ReqHandler _reqHandler = new();
+
     [HttpGet("{url}/{headers?}/{type?}")]
-    
     public Task GetProxy(string url, string? headers = "{}")
     {
         try
         {
             url = Uri.UnescapeDataString(url);
-            headers = Uri.UnescapeDataString(headers);
+            headers = Uri.UnescapeDataString(headers!);
 
-            var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers!);
+            var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
 
             var options = HttpProxyOptionsBuilder.Instance
                 .WithShouldAddForwardedHeaders(false)
-                .WithBeforeSend((c, hrm) =>
+                .WithBeforeSend((_, hrm) =>
                 {
                     foreach (var header in CorsBlockedHeaders.List)
                     {
@@ -37,7 +36,7 @@ public partial class Proxy : Controller
                             hrm.Headers.FirstOrDefault(h =>
                                 h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
 
-                        if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
+                        hrm.Headers.Remove(headerToRemove);
                     }
 
                     if (headersDictionary != null)
@@ -57,7 +56,7 @@ public partial class Proxy : Controller
                     context.Response.StatusCode = context.Response.StatusCode;
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(e));
                 })
-                .WithAfterReceive((c, hrm) =>
+                .WithAfterReceive((_, hrm) =>
                 {
                     foreach (var header in CorsBlockedHeaders.List) hrm.Headers.Remove(header.ToLower());
 

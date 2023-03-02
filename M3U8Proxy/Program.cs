@@ -1,5 +1,5 @@
 using AspNetCore.Proxy;
-using Microsoft.Net.Http.Headers;
+
 const string myAllowSpecificOrigins = "corsPolicy";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,13 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddProxies();
 
 if (!builder.Environment.IsDevelopment())
-{
-    builder.WebHost.ConfigureKestrel(k =>
-    {
-        k.ListenAnyIP(5001);
-    });
-    
-}
+    builder.WebHost.ConfigureKestrel(k => { k.ListenAnyIP(5001); });
 
 builder.Services.AddCors(options =>
 {
@@ -36,10 +30,7 @@ app.UseCors(myAllowSpecificOrigins);
 app.UseResponseCaching();
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapGet("/hello", async context =>
-    {
-        await context.Response.WriteAsync("Hello World!");
-    });
+    endpoints.MapGet("/hello", async context => { await context.Response.WriteAsync("Hello World!"); });
 });
 app.UseAuthentication();
 app.MapControllers();

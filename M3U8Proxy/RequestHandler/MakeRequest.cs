@@ -4,12 +4,14 @@ namespace M3U8Proxy.RequestHandler;
 
 public partial class ReqHandler
 {
+    
+    private readonly RestClient _client = new ();
     public IRestResponse MakeRequest(string url, Dictionary<string, string> headersDictionary)
     {
-        var client = new RestClient(url) { Timeout = -1 };
+        _client.BaseUrl = new Uri(url);
         var request = new RestRequest(Method.GET);
 
         foreach (var header in headersDictionary) request.AddHeader(header.Key, header.Value);
-        return client.Execute(request);
+        return _client.Execute(request);
     }
 }
