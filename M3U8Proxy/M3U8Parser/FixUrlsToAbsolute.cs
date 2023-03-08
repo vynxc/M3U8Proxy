@@ -28,7 +28,7 @@ public partial class M3U8Paser
                 else
                 {
                     absoluteUrl.Clear();
-                    absoluteUrl.Append(url.Substring(0, index + 1));
+                    absoluteUrl.Append(url[..(index + 1)]);
                     absoluteUrl.Append(lines[i]);
                     absoluteUrl.Append(parameters);
                 }

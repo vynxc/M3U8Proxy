@@ -17,7 +17,7 @@ public partial class Proxy : Controller
     private readonly ReqHandler _reqHandler = new();
 
     [HttpGet("{url}/{headers?}/{type?}")]
-    public Task GetProxy(string url, string? headers = "{}")
+    public Task GetProxy(string url, string? headers = "{}", string type="m3u8")
     {
         try
         {
@@ -39,15 +39,18 @@ public partial class Proxy : Controller
                         hrm.Headers.Remove(headerToRemove);
                     }
 
-                    if (headersDictionary != null)
-                        foreach (var header in headersDictionary)
-                        {
-                            var headerToRemove =
-                                hrm.Headers.FirstOrDefault(h =>
-                                    h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key;
-                            if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
-                            hrm.Headers.Add(header.Key, header.Value);
-                        }
+                    if (headersDictionary == null) return Task.CompletedTask;
+                    
+                    foreach (var header in headersDictionary)
+                    {
+                        var headerToRemove =
+                            hrm.Headers.First(h =>
+                                h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key; 
+                            
+                        hrm.Headers.Remove(headerToRemove);
+                        hrm.Headers.Add(header.Key, header.Value);
+                    }
+                    
 
                     return Task.CompletedTask;
                 })
