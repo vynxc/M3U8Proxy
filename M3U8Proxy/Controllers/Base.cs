@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 
 namespace M3U8Proxy.Controllers;
 
-[ResponseCache(Duration = 1, Location = ResponseCacheLocation.Any)]
 [EnableCors("corsPolicy")]
 [ApiController]
 public class Base : Controller

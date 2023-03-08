@@ -9,7 +9,6 @@ namespace M3U8Proxy.Controllers;
 
 public partial class Proxy
 {
-    [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Any)]
     [HttpGet("m3u8/{url}/{headers?}/{type?}")]
     public IActionResult GetM3U8(string url, string? headers = "{}")
     {
