@@ -27,8 +27,10 @@ public class Base : Controller
                         var headerToRemove =
                             hrm.Headers.FirstOrDefault(h =>
                                 h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
-
-                        hrm.Headers.Remove(headerToRemove);
+                        if (headerToRemove != null)
+                            hrm.Headers.Remove(headerToRemove);
+    
+                        
                     }
 
                     return Task.CompletedTask;

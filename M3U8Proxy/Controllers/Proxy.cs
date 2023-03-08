@@ -46,8 +46,10 @@ public partial class Proxy : Controller
                         var headerToRemove =
                             hrm.Headers.First(h =>
                                 h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key; 
-                            
-                        hrm.Headers.Remove(headerToRemove);
+                        
+                        if (headerToRemove != null)    
+                            hrm.Headers.Remove(headerToRemove);
+                        
                         hrm.Headers.Add(header.Key, header.Value);
                     }
                     
