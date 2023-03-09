@@ -9,7 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddProxies();
 
 if (!builder.Environment.IsDevelopment())
-    builder.WebHost.ConfigureKestrel(k => { k.ListenAnyIP(5001); });
+    builder.WebHost.ConfigureKestrel(k => { k.ListenAnyIP(8080); });
 
 builder.Services.AddCors(options =>
 {
