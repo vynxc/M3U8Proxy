@@ -11,7 +11,7 @@ namespace M3U8Proxy.Controllers;
 [EnableCors("corsPolicy")]
 [ApiController]
 [Route("[controller]")]
-public partial class Proxy : Controller
+public partial class Proxy : BaseController
 {
     private readonly M3U8Paser _paser = new();
     private readonly ReqHandler _reqHandler = new();
@@ -77,5 +77,9 @@ public partial class Proxy : Controller
             HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(e));
             return Task.FromResult(0);
         }
+    }
+
+    public Proxy(ILogger<BaseController> logger) : base(logger)
+    {
     }
 }

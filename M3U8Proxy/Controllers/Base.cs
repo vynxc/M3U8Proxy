@@ -8,7 +8,7 @@ namespace M3U8Proxy.Controllers;
 
 [EnableCors("corsPolicy")]
 [ApiController]
-public class Base : Controller
+public class Base : BaseController
 {
     [HttpGet("/{**url}")]
     public Task ProxyTest(string url)
@@ -56,5 +56,9 @@ public class Base : Controller
             HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(e));
             return Task.FromResult(0);
         }
+    }
+
+    public Base(ILogger<BaseController> logger) : base(logger)
+    {
     }
 }
