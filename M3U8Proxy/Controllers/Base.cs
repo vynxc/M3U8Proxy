@@ -8,8 +8,10 @@ namespace M3U8Proxy.Controllers;
 
 [EnableCors("corsPolicy")]
 [ApiController]
-public class Base : BaseController
+public class Base : Controller
 {
+   
+    
     [HttpGet("/{**url}")]
     public Task ProxyTest(string url)
     {
@@ -58,7 +60,4 @@ public class Base : BaseController
         }
     }
 
-    public Base(ILogger<BaseController> logger) : base(logger)
-    {
-    }
 }

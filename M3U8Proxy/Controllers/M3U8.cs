@@ -9,11 +9,17 @@ namespace M3U8Proxy.Controllers;
 
 public partial class Proxy
 {
+    
+    private readonly IConfiguration _configuration;
+    public Proxy(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
     [HttpGet("m3u8/{url}/{headers?}/{type?}")]
     public IActionResult GetM3U8(string url, string? headers = "{}")
     {
         var listOfKeywords = new List<string> { "#EXT-X-STREAM-INF", "#EXT-X-I-FRAME-STREAM-INF" };
-        var baseUrl = "https://proxy.vnxservers.com/";
+        var baseUrl = _configuration["ProxyUrl"];
         var proxyUrl = baseUrl + "proxy/";
         var m3U8Url = baseUrl + "proxy/m3u8/";
 

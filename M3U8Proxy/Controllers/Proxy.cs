@@ -11,13 +11,13 @@ namespace M3U8Proxy.Controllers;
 [EnableCors("corsPolicy")]
 [ApiController]
 [Route("[controller]")]
-public partial class Proxy : BaseController
+public partial class Proxy : Controller
 {
     private readonly M3U8Paser _paser = new();
     private readonly ReqHandler _reqHandler = new();
 
     [HttpGet("{url}/{headers?}/{type?}")]
-    public Task GetProxy(string url, string? headers = "{}", string type="m3u8")
+    public Task GetProxy(string url, string? headers = "{}")
     {
         try
         {
@@ -36,7 +36,7 @@ public partial class Proxy : BaseController
                             hrm.Headers.FirstOrDefault(h =>
                                 h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
 
-                        hrm.Headers.Remove(headerToRemove);
+                        if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
                     }
 
                     if (headersDictionary == null) return Task.CompletedTask;
@@ -79,7 +79,4 @@ public partial class Proxy : BaseController
         }
     }
 
-    public Proxy(ILogger<BaseController> logger) : base(logger)
-    {
-    }
 }
