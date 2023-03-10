@@ -9,12 +9,13 @@ namespace M3U8Proxy.Controllers;
 
 public partial class Proxy
 {
-    
     private readonly IConfiguration _configuration;
+
     public Proxy(IConfiguration configuration)
     {
         _configuration = configuration;
     }
+
     [HttpGet("m3u8/{url}/{headers?}/{type?}")]
     public IActionResult GetM3U8(string url, string? headers = "{}")
     {
@@ -51,7 +52,7 @@ public partial class Proxy
             var modifiedContent = _paser.ModifyContent(content, isPlaylistM3U8 ? m3U8Url : proxyUrl, headers);
 
             return File(Encoding.UTF8.GetBytes(modifiedContent), "application/vnd.apple.mpegurl",
-                $"{url.Substring(0, 15)}.m3u8");
+                $"{url[..15]}.m3u8");
         }
         catch (Exception e)
         {

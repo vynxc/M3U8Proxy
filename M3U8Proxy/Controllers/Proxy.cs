@@ -40,19 +40,19 @@ public partial class Proxy : Controller
                     }
 
                     if (headersDictionary == null) return Task.CompletedTask;
-                    
+
                     foreach (var header in headersDictionary)
                     {
                         var headerToRemove =
                             hrm.Headers.First(h =>
-                                h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key; 
-                        
-                        if (headerToRemove != null)    
+                                h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key;
+
+                        if (headerToRemove != null)
                             hrm.Headers.Remove(headerToRemove);
-                        
+
                         hrm.Headers.Add(header.Key, header.Value);
                     }
-                    
+
 
                     return Task.CompletedTask;
                 })
@@ -78,5 +78,4 @@ public partial class Proxy : Controller
             return Task.FromResult(0);
         }
     }
-
 }

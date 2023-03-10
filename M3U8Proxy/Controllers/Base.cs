@@ -10,8 +10,6 @@ namespace M3U8Proxy.Controllers;
 [ApiController]
 public class Base : Controller
 {
-   
-    
     [HttpGet("/{**url}")]
     public Task ProxyTest(string url)
     {
@@ -30,8 +28,6 @@ public class Base : Controller
                                 h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
                         if (headerToRemove != null)
                             hrm.Headers.Remove(headerToRemove);
-    
-                        
                     }
 
                     return Task.CompletedTask;
@@ -59,5 +55,4 @@ public class Base : Controller
             return Task.FromResult(0);
         }
     }
-
 }

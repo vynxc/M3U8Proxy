@@ -4,8 +4,8 @@ namespace M3U8Proxy.RequestHandler;
 
 public partial class ReqHandler
 {
-    
-    private readonly RestClient _client = new ();
+    private readonly RestClient _client = new();
+
     public IRestResponse MakeRequest(string url, Dictionary<string, string> headersDictionary)
     {
         _client.BaseUrl = new Uri(url);
