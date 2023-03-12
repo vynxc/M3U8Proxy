@@ -11,18 +11,8 @@ jobs:
     # Our previously created self-hosted runner
     runs-on: self-hosted
 
-    strategy:
-      matrix:
-        dotnet: ["7.0.x"]
-
     # A sequence of tasks that will execute as part of the job
     steps:
-      # Checks out repository so our job can access it
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v1.7.2
-        with:
-          dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: Install dependencies
         run: dotnet restore
