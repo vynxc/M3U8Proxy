@@ -28,7 +28,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet publish -c Release -r linux-x64 --self-contained --native
+        run: dotnet build --configuration Release --no-restore --native
 
       # We will output publish files to the folder we previously created
       - name: Publish
