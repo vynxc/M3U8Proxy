@@ -7,19 +7,29 @@ namespace M3U8Proxy.M3U8Parser;
 
 public partial class M3U8Paser
 {
-    private readonly Regex _regex = new(@"https?:\/\/[^\s""]+", RegexOptions.Compiled);
+    private readonly Regex _fixUrlRegex;
 
+
+    public M3U8Paser()
+    {
+        _fixUrlRegex = FixUrlRegex();
+        _getParamsRegex = GetParamsRegex();
+    }
+
+    [GeneratedRegexAttribute(@"https?:\/\/[^\s""]+")]
+    private static partial Regex FixUrlRegex();
+
+   
     public string ModifyContent(string content, string prefix, string headers)
     {
-        Stopwatch stopwatch = new();
+        var stopwatch = new Stopwatch();
         stopwatch.Start();
         try
         {
             var headersEncoded = Uri.EscapeDataString(headers);
             var sb = new StringBuilder(content.Length);
-
-            int lastIndex = 0;
-            foreach (Match match in _regex.Matches(content))
+            var lastIndex = 0;
+            foreach (Match match in FixUrlRegex().Matches(content))
             {
                 sb.Append(content, lastIndex, match.Index - lastIndex);
                 sb.Append(prefix);
@@ -37,6 +47,5 @@ public partial class M3U8Paser
             stopwatch.Stop();
             Console.WriteLine($"ModifyContent: {stopwatch.ElapsedMilliseconds} ms");
         }
-       
     }
 }

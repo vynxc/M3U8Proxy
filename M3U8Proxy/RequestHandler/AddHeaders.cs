@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Web;
 using RestSharp;
 
 namespace M3U8Proxy.RequestHandler;
@@ -28,6 +27,5 @@ public partial class ReqHandler
             stopwatch.Stop();
             Console.WriteLine($"AddResponseHeaders: {stopwatch.ElapsedMilliseconds} ms");
         }
-        
     }
 }

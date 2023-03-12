@@ -11,19 +11,19 @@ public partial class ReqHandler
     {
         Stopwatch stopwatch = new();
         stopwatch.Start();
+
         try
         {
             _client.BaseUrl = new Uri(url);
             var request = new RestRequest(Method.GET);
-
             foreach (var header in headersDictionary) request.AddHeader(header.Key, header.Value);
-            return _client.Execute(request);
+            var response = _client.Execute(request);
+            return response;
         }
         finally
         {
             stopwatch.Stop();
             Console.WriteLine($"\n MakeRequest: {stopwatch.ElapsedMilliseconds} ms");
         }
-       
     }
 }

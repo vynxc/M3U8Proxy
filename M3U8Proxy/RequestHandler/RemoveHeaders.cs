@@ -11,7 +11,8 @@ public partial class ReqHandler
         stopwatch.Start();
         try
         {
-            var headersToRemove = new HashSet<string>(CorsBlockedHeaders.List, StringComparer.InvariantCultureIgnoreCase);
+            var headersToRemove =
+                new HashSet<string>(CorsBlockedHeaders.List, StringComparer.InvariantCultureIgnoreCase);
             for (var i = response.Headers.Count - 1; i >= 0; i--)
             {
                 var header = response.Headers[i];
@@ -23,6 +24,5 @@ public partial class ReqHandler
             stopwatch.Stop();
             Console.WriteLine($"RemoveBlockedHeaders: {stopwatch.ElapsedMilliseconds} ms");
         }
-       
     }
 }
