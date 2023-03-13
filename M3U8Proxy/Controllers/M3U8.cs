@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Text;
 using M3U8Proxy.M3U8Parser;
 using M3U8Proxy.RequestHandler;
@@ -22,10 +23,10 @@ public partial class Proxy
     [HttpGet("m3u8/{url}/{headers?}/{type?}")]
     public IActionResult GetM3U8(string url, string? headers = "{}")
     {
-        Console.WriteLine("no cache");
+        Stopwatch stopwatch = new();
         var proxyUrl = _baseUrl + "proxy/";
         var m3U8Url = _baseUrl + "proxy/m3u8/";
-
+        stopwatch.Start();
         try
         {
             url = Uri.UnescapeDataString(url);
@@ -36,28 +37,58 @@ public partial class Proxy
                 return BadRequest("URL missing or malformed.");
 
             var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
+            
             var response = _reqHandler.MakeRequest(url, headersDictionary!);
+            
             HttpContext.Response.StatusCode = (int)response.StatusCode;
 
             if (response.StatusCode != HttpStatusCode.OK)
-                return BadRequest(JsonConvert.SerializeObject(response));
+                return BadRequest(JsonConvert.SerializeObject(response.ErrorMessage));
 
             ReqHandler.RemoveBlockedHeaders(response);
+            
             ReqHandler.AddResponseHeaders(response);
+            
+            var lines = response.Content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            
+            var isPlaylistM3U8 = IsPlaylistM3U8(lines);
+            
+            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? m3U8Url : proxyUrl, headers);
 
-            var content = M3U8Paser.FixUrls(response, url);
-            var isPlaylistM3U8 = content.IndexOf(_listOfKeywords[0], StringComparison.OrdinalIgnoreCase) >= 0
-                                 || content.IndexOf(_listOfKeywords[1], StringComparison.OrdinalIgnoreCase) >= 0;
-
-            var modifiedContent = _paser.ModifyContent(content, isPlaylistM3U8 ? m3U8Url : proxyUrl, headers);
-
-            return File(Encoding.UTF8.GetBytes(modifiedContent), "application/vnd.apple.mpegurl",
+            return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
                 $"{GenerateRandomId(10)}.m3u8");
         }
         catch (Exception e)
         {
             return BadRequest(JsonConvert.SerializeObject(e));
         }
+        finally
+        {
+            stopwatch.Stop();
+            Console.WriteLine($"\n GetM3U8: {stopwatch.ElapsedMilliseconds} ms");
+        }
+    }
+
+    private bool IsPlaylistM3U8(string[] lines)
+    {
+        var isPlaylistM3U8 = false;
+        
+        for (var i = 0; i < lines.Length || i < 10; i++)
+        {
+            for (var j = 0; j < _listOfKeywords.Count; j++)
+            {
+                if (lines[i].IndexOf(_listOfKeywords[j], StringComparison.OrdinalIgnoreCase) < 0) continue;
+                isPlaylistM3U8 = true;
+                break;
+            }
+
+            if (isPlaylistM3U8)
+            {
+                break;
+            }
+        }
+
+        return isPlaylistM3U8;
     }
 
     public static string GenerateRandomId(int length)

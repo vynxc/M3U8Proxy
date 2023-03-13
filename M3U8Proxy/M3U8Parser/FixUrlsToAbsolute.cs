@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
-using RestSharp;
+
 
 namespace M3U8Proxy.M3U8Parser;
 
@@ -9,17 +9,20 @@ public partial class M3U8Paser
 {
     private readonly Regex _getParamsRegex;
 
-    [GeneratedRegexAttribute(@"\?.+", RegexOptions.Compiled)]
+    [GeneratedRegex(@"\?.+", RegexOptions.Compiled)]
     private static partial Regex GetParamsRegex();
-
-    public static string FixUrls(IRestResponse response, string url)
+    public M3U8Paser()
+    {
+        _getParamsRegex = GetParamsRegex();
+    }
+  
+    public static string FixAllUrls(string[] lines, string url,string prefix,string headers)
     {
         Stopwatch stopwatch = new();
         stopwatch.Start();
         try
         {
             var absoluteUrl = new StringBuilder();
-            var lines = response.Content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             var parameters = GetParamsRegex().Match(url).Value;
             var uri = new Uri(url);
             var baseUrl = $"{uri.Scheme}://{uri.Authority}";
@@ -43,7 +46,8 @@ public partial class M3U8Paser
                         absoluteUrl.Append(parameters);
                     }
 
-                    lines[i] = absoluteUrl.ToString();
+                    lines[i] = prefix + Uri.EscapeDataString(absoluteUrl.ToString()) + "/" +
+                               Uri.EscapeDataString(headers);
                 }
 
             return string.Join(Environment.NewLine, lines);
@@ -51,7 +55,7 @@ public partial class M3U8Paser
         finally
         {
             stopwatch.Stop();
-            Console.WriteLine($"FixUrls: {stopwatch.ElapsedMilliseconds} ms");
+            Console.WriteLine($"FixAllUrls: {stopwatch.ElapsedMilliseconds} ms");
         }
     }
 }

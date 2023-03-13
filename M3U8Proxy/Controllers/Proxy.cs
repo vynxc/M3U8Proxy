@@ -18,9 +18,7 @@ public partial class Proxy : Controller
 
     [HttpGet("{url}/{headers?}/{type?}")]
     public Task GetProxy(string url, string? headers = "{}")
-    {
-        Console.WriteLine("no cache");
-
+    { 
         try
         {
             url = Uri.UnescapeDataString(url);
