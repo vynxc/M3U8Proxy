@@ -26,8 +26,8 @@ public partial class M3U8Paser
             var parameters = GetParamsRegex().Match(url).Value;
             var uri = new Uri(url);
             var baseUrl = $"{uri.Scheme}://{uri.Authority}";
-            var index = url.LastIndexOf('/');
-
+            var index = url.LastIndexOf('/'); 
+            headers = Uri.EscapeDataString(headers);
             for (var i = 0; i < lines.Length; i++)
                 if (!lines[i].StartsWith("http") && !lines[i].StartsWith("#") && !string.IsNullOrWhiteSpace(lines[i]))
                 {
@@ -46,8 +46,7 @@ public partial class M3U8Paser
                         absoluteUrl.Append(parameters);
                     }
 
-                    lines[i] = prefix + Uri.EscapeDataString(absoluteUrl.ToString()) + "/" +
-                               Uri.EscapeDataString(headers);
+                    lines[i] = prefix + Uri.EscapeDataString(absoluteUrl.ToString()) + "/" + headers;
                 }
 
             return string.Join(Environment.NewLine, lines);
