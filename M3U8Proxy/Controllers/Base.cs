@@ -10,7 +10,9 @@ namespace M3U8Proxy.Controllers;
 [ApiController]
 public class Base : Controller
 {
-    [HttpGet("/{**url}")]
+    [HttpHead]
+    [HttpGet]
+    [Route("/{**url}")]
     public Task ProxyTest(string url)
     {
         var query = Request.QueryString;

@@ -16,7 +16,9 @@ public partial class Proxy : Controller
     private readonly M3U8Paser _paser = new();
     private readonly ReqHandler _reqHandler = new();
 
-    [HttpGet("{url}/{headers?}/{type?}")]
+    [HttpHead]
+    [HttpGet]
+    [Route("{url}/{headers?}/{type?}")]
     public Task GetProxy(string url, string? headers = "{}")
     { 
         try

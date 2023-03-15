@@ -20,7 +20,9 @@ public partial class Proxy
     }
 
     [OutputCache(PolicyName = "m3u8")]
-    [HttpGet("m3u8/{url}/{headers?}/{type?}")]
+    [HttpHead]
+    [HttpGet]
+    [Route("m3u8/{url}/{headers?}/{type?}")]
     public IActionResult GetM3U8(string url, string? headers = "{}")
     {
         Stopwatch stopwatch = new();
