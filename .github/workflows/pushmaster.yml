@@ -16,11 +16,16 @@ jobs:
 
       - name: Install dependencies
         run: dotnet restore
+        
+      - name: Install dependencies
+        run: dotnet restore
 
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
       # We will output publish files to the folder we previously created
       - name: Publish
-        run: dotnet publish -c Release -o /var/www/m3u8-proxy --runtime linux-x64 --self-contained true
+        run: dotnet publish -c Release -o /var/www/m3u8-proxy
         
       - name: Restart the app
         run: |
