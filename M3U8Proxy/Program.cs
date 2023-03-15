@@ -39,7 +39,7 @@ app.UseOutputCache();
 
 app.MapGet("/hello", async context =>
 {
-    await context.Response.WriteAsync("Hello World!");
+    await context.Response.WriteAsync("Hello, Bitches!");
 });
 app.UseAuthentication();
 app.MapControllers();
