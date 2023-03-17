@@ -23,7 +23,7 @@ public partial class Proxy
     [HttpHead]
     [HttpGet]
     [Route("m3u8/{url}/{headers?}/{type?}")]
-    public IActionResult GetM3U8(string url, string? headers = "{}")
+    public IActionResult GetM3U8(string url, string? headers = "{}",[FromQuery]string? forcedHeadersProxy= "{}")
     {
         Stopwatch stopwatch = new();
         var proxyUrl = _baseUrl + "proxy/";
@@ -34,7 +34,6 @@ public partial class Proxy
             url = Uri.UnescapeDataString(url);
 
             headers = Uri.UnescapeDataString(headers!);
-
             if (string.IsNullOrEmpty(url))
                 return BadRequest("URL missing or malformed.");
 
@@ -54,8 +53,8 @@ public partial class Proxy
             var lines = response.Content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             
             var isPlaylistM3U8 = IsPlaylistM3U8(lines);
-            
-            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? m3U8Url : proxyUrl, headers);
+            var suffix = Uri.EscapeDataString(headers)+"?forcedHeadersProxy="+Uri.EscapeDataString(forcedHeadersProxy!);
+            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? m3U8Url : proxyUrl, suffix);
 
             return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
                 $"{GenerateRandomId(10)}.m3u8");

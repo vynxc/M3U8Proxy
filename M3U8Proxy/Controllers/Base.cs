@@ -10,6 +10,7 @@ namespace M3U8Proxy.Controllers;
 [ApiController]
 public class Base : Controller
 {
+    //TODO: Method Extactions
     [HttpHead]
     [HttpGet]
     [Route("/{**url}")]

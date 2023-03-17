@@ -16,7 +16,7 @@ public partial class M3U8Paser
         _getParamsRegex = GetParamsRegex();
     }
   
-    public static string FixAllUrls(string[] lines, string url,string prefix,string headers)
+    public static string FixAllUrls(string[] lines, string url,string prefix,string suffix)
     {
         Stopwatch stopwatch = new();
         stopwatch.Start();
@@ -27,7 +27,6 @@ public partial class M3U8Paser
             var uri = new Uri(url);
             var baseUrl = $"{uri.Scheme}://{uri.Authority}";
             var index = url.LastIndexOf('/'); 
-            headers = Uri.EscapeDataString(headers);
             for (var i = 0; i < lines.Length; i++)
                 if (!lines[i].StartsWith("http") && !lines[i].StartsWith("#") && !string.IsNullOrWhiteSpace(lines[i]))
                 {
@@ -46,7 +45,7 @@ public partial class M3U8Paser
                         absoluteUrl.Append(parameters);
                     }
 
-                    lines[i] = prefix + Uri.EscapeDataString(absoluteUrl.ToString()) + "/" + headers;
+                    lines[i] = prefix + Uri.EscapeDataString(absoluteUrl.ToString()) + "/" + suffix;
                 }
 
             return string.Join(Environment.NewLine, lines);
