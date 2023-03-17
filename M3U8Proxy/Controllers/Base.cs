@@ -10,6 +10,14 @@ namespace M3U8Proxy.Controllers;
 [ApiController]
 public class Base : Controller
 {
+    [HttpGet]
+    [Route("/ip")]
+    public ActionResult ClientIp()
+    {
+        var ip = Request.HttpContext.Connection.RemoteIpAddress?.MapToIPv4();
+
+        return Content($"Your IP address is: {ip}");
+    }
     //TODO: Method Extactions
     [HttpHead]
     [HttpGet]
