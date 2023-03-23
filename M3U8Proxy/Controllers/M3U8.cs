@@ -54,7 +54,7 @@ public partial class Proxy
             
             var isPlaylistM3U8 = IsPlaylistM3U8(lines);
             var suffix = Uri.EscapeDataString(headers)+"?forcedHeadersProxy="+Uri.EscapeDataString(forcedHeadersProxy!);
-            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? m3U8Url : proxyUrl, suffix,addIntro);
+            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? m3U8Url : proxyUrl, suffix,addIntro, isPlaylistM3U8);
 
             return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
                 $"{GenerateRandomId(10)}.m3u8");

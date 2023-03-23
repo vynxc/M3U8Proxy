@@ -16,7 +16,7 @@ public partial class M3U8Paser
         _getParamsRegex = GetParamsRegex();
     }
   
-    public static string FixAllUrls(string[] lines, string url,string prefix,string suffix, bool addIntro)
+    public static string FixAllUrls(string[] lines, string url,string prefix,string suffix, bool addIntro, bool isPlaylistM3U8)
          {
              Stopwatch stopwatch = new();
              stopwatch.Start();
@@ -29,7 +29,7 @@ public partial class M3U8Paser
                 
                  var lastIndex = 0;
                  string newLine;
-                 if (addIntro)
+                 if (addIntro&&!isPlaylistM3U8)
                  {
                      for (var i =0; i < lines.Length; i++)
                      {
