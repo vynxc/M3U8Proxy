@@ -10,6 +10,16 @@ namespace M3U8Proxy.Controllers;
 [ApiController]
 public class Base : Controller
 {
+    
+    [HttpGet("cdn/outputintro.ts")]
+    public async Task<FileStreamResult> Intro()
+    {
+        const string path = @"/root/Videos/outputintro.ts";
+        var stream = System.IO.File.OpenRead(path);
+        return new FileStreamResult(stream, "video/MP2T");
+    }
+    
+    
     [HttpGet]
     [Route("/ip")]
     public ActionResult ClientIp()
