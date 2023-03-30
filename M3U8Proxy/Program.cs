@@ -28,7 +28,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(myAllowSpecificOrigins,
         policyBuilder =>
         {
-            policyBuilder.WithOrigins("https://unime.vercel.app","https://streamable.moe","https://anistreme.live","https://hlsplayer.net/");
+            policyBuilder.WithOrigins("https://unime.vercel.app","https://streamable.moe","https://anistreme.live","https://www.hlsplayer.net");
         });
 });
 
@@ -38,8 +38,10 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedFor |
                        ForwardedHeaders.XForwardedProto
 });  
+
 app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
+
 app.UseOutputCache();
 
 app.MapGet("/hello", async context =>
