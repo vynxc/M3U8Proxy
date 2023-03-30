@@ -28,9 +28,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(myAllowSpecificOrigins,
         policyBuilder =>
         {
-            policyBuilder.AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            policyBuilder.WithOrigins("https://unime.vercel.app","https://streamable.moe","https://anistreme.live","https://hlsplayer.net/");
         });
 });
 
