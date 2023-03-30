@@ -13,7 +13,6 @@ namespace M3U8Proxy.Controllers;
 [Route("[controller]")]
 public partial class Proxy : Controller
 {
-    private readonly M3U8Paser _paser = new();
     private readonly ReqHandler _reqHandler = new();
 
     [HttpHead]

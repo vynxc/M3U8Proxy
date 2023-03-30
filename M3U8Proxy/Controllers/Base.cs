@@ -62,10 +62,6 @@ public class Base : Controller
                 .WithAfterReceive((res, hrm) =>
                 {
                     foreach (var header in CorsBlockedHeaders.List) hrm.Headers.Remove(header.ToLower());
-                    if (hrm.Content.Headers.ContentType?.MediaType == "application/vnd.apple.mpegurl")
-                    {
-                        res.Response.Body.WriteAsync(new ());
-                    }
                     return Task.CompletedTask;
                 })
                 .Build();
