@@ -18,7 +18,7 @@ public partial class Proxy
     {
         _baseUrl = configuration["ProxyUrl"]!;
     }
-
+    
     [OutputCache(PolicyName = "m3u8")]
     [HttpHead]
     [HttpGet]
@@ -44,7 +44,7 @@ public partial class Proxy
             HttpContext.Response.StatusCode = (int)response.StatusCode;
 
             if (response.StatusCode != HttpStatusCode.OK)
-                return BadRequest(JsonConvert.SerializeObject(response.ErrorMessage));
+                return BadRequest(JsonConvert.SerializeObject("""{"message":"Error while fetching the m3u8 file"}"""));
 
             ReqHandler.RemoveBlockedHeaders(response);
             

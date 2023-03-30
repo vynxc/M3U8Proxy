@@ -1,4 +1,5 @@
-﻿using AspNetCore.Proxy;
+﻿using System.Collections.Concurrent;
+using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -58,10 +59,13 @@ public class Base : Controller
                     context.Response.StatusCode = context.Response.StatusCode;
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(e));
                 })
-                .WithAfterReceive((_, hrm) =>
+                .WithAfterReceive((res, hrm) =>
                 {
                     foreach (var header in CorsBlockedHeaders.List) hrm.Headers.Remove(header.ToLower());
-
+                    if (hrm.Content.Headers.ContentType?.MediaType == "application/vnd.apple.mpegurl")
+                    {
+                        res.Response.Body.WriteAsync(new ());
+                    }
                     return Task.CompletedTask;
                 })
                 .Build();
