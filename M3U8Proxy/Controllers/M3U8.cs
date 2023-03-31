@@ -10,31 +10,31 @@ namespace M3U8Proxy.Controllers;
 
 public partial class Proxy
 {
-    private readonly string _baseUrl;
     private readonly List<string> _listOfKeywords = new() { "#EXT-X-STREAM-INF", "#EXT-X-I-FRAME-STREAM-INF" };
+    private readonly string _proxyUrl;
+    private readonly string _m3U8Url;
 
     public Proxy(IConfiguration configuration)
     {
-        _baseUrl = configuration["ProxyUrl"]!;
+        var baseUrl = configuration["ProxyUrl"]!;
+        _proxyUrl = baseUrl + "proxy/";
+        _m3U8Url = baseUrl + "proxy/m3u8/";
     }
 
-    [OutputCache(PolicyName = "m3u8")]
+    //[OutputCache(PolicyName = "m3u8")]
     [HttpHead]
     [HttpGet]
     [Route("m3u8/{url}/{headers?}/{type?}")]
-    public IActionResult GetM3U8(string url, string? headers = "{}", [FromQuery] string? forcedHeadersProxy = "{}",
-        bool addIntro = true)
+    public IActionResult GetM3U8(string url, string? headers = "{}", [FromQuery] string? forcedHeadersProxy = "{}")
     {
-        var proxyUrl = _baseUrl + "proxy/";
-        var m3U8Url = _baseUrl + "proxy/m3u8/";
-
         try
         {
             url = Uri.UnescapeDataString(url);
 
             headers = Uri.UnescapeDataString(headers!);
+            
             if (string.IsNullOrEmpty(url))
-                return BadRequest("URL missing or malformed.");
+                return BadRequest("URL Is Null Or Empty.");
 
             var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
 
@@ -45,16 +45,16 @@ public partial class Proxy
             if (response.StatusCode != HttpStatusCode.OK)
                 return BadRequest(JsonConvert.SerializeObject("""{"message":"Error while fetching the m3u8 file"}"""));
 
-            ReqHandler.RemoveBlockedHeaders(response);
-
-            ReqHandler.AddResponseHeaders(response);
+            ReqHandler.ManageResponseHeaders(response);
 
             var lines = response.Content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
             var isPlaylistM3U8 = IsPlaylistM3U8(lines);
+            
             var suffix = Uri.EscapeDataString(headers) + "?forcedHeadersProxy=" +
-                         Uri.EscapeDataString(forcedHeadersProxy!) + "&addIntro=" + addIntro;
-            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? m3U8Url : proxyUrl, suffix, addIntro,
+                         Uri.EscapeDataString(forcedHeadersProxy!);
+            
+            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? _m3U8Url : _proxyUrl, suffix,
                 isPlaylistM3U8);
 
             return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
