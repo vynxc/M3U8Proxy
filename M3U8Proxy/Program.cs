@@ -1,7 +1,5 @@
-using System.Diagnostics;
 using AspNetCore.Proxy;
 using Microsoft.AspNetCore.HttpOverrides;
-
 
 const string myAllowSpecificOrigins = "corsPolicy";
 
@@ -13,7 +11,6 @@ builder.Services.AddOutputCache(options =>
         builder.Cache();
         builder.Expire(TimeSpan.FromSeconds(5));
     });
-
 });
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -28,7 +25,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(myAllowSpecificOrigins,
         policyBuilder =>
         {
-            policyBuilder.WithOrigins("https://unime.vercel.app","https://streamable.moe","https://anistreme.live","https://www.hlsplayer.net");
+            policyBuilder.WithOrigins("https://unime.vercel.app", "https://streamable.moe", "https://anistreme.live",
+                "https://www.hlsplayer.net");
         });
 });
 
@@ -37,17 +35,14 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor |
                        ForwardedHeaders.XForwardedProto
-});  
+});
 
 app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
 
 app.UseOutputCache();
 
-app.MapGet("/hello", async context =>
-{
-    await context.Response.WriteAsync("Hello, Bitches!");
-});
+app.MapGet("/hello", async context => { await context.Response.WriteAsync("Hello, Bitches!"); });
 app.UseAuthentication();
 app.MapControllers();
 app.Run();

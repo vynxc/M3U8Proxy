@@ -1,6 +1,5 @@
 ﻿using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
-using M3U8Proxy.M3U8Parser;
 using M3U8Proxy.RequestHandler;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -18,15 +17,16 @@ public partial class Proxy : Controller
     [HttpHead]
     [HttpGet]
     [Route("{url}/{headers?}/{type?}")]
-    public Task GetProxy(string url, string? headers = "{}",string? forcedHeadersProxy = "{}")
-    { 
+    public Task GetProxy(string url, string? headers = "{}", string? forcedHeadersProxy = "{}")
+    {
         try
         {
             url = Uri.UnescapeDataString(url);
             headers = Uri.UnescapeDataString(headers!);
             forcedHeadersProxy = Uri.UnescapeDataString(forcedHeadersProxy!);
-            
-            var forcedHeadersProxyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(forcedHeadersProxy);
+
+            var forcedHeadersProxyDictionary =
+                JsonConvert.DeserializeObject<Dictionary<string, string>>(forcedHeadersProxy);
             var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
 
             var options = HttpProxyOptionsBuilder.Instance
@@ -38,7 +38,7 @@ public partial class Proxy : Controller
                     if (headersDictionary == null) return Task.CompletedTask;
 
                     BeforeSendAddHeaders(headersDictionary, hrm);
-                    
+
                     return Task.CompletedTask;
                 })
                 .WithHandleFailure(async (context, e) =>
@@ -62,7 +62,8 @@ public partial class Proxy : Controller
         }
     }
 
-    private static void AfterReceiveAddForcedHeaders(Dictionary<string, string>? forcedHeadersProxyDictionary, HttpResponseMessage hrm)
+    private static void AfterReceiveAddForcedHeaders(Dictionary<string, string>? forcedHeadersProxyDictionary,
+        HttpResponseMessage hrm)
     {
         foreach (var header in forcedHeadersProxyDictionary)
         {

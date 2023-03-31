@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using AspNetCore.Proxy;
+﻿using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +10,15 @@ namespace M3U8Proxy.Controllers;
 [ApiController]
 public class Base : Controller
 {
-    
+    private readonly FileStream _stream = System.IO.File.OpenRead(@"/root/Videos/outputintro.ts");
+
     [HttpGet("cdn/outputintro.ts")]
-    public async Task<FileStreamResult> Intro()
+    public IActionResult Intro()
     {
-        const string path = @"/root/Videos/outputintro.ts";
-        var stream = System.IO.File.OpenRead(path);
-        return new FileStreamResult(stream, "video/MP2T");
+        return File(_stream, "video/MP2T");
     }
-    
-    
+
+
     [HttpGet]
     [Route("/ip")]
     public ActionResult ClientIp()
@@ -29,6 +27,7 @@ public class Base : Controller
 
         return Content($"Your IP address is: {ip}");
     }
+
     //TODO: Method Extactions
     [HttpHead]
     [HttpGet]
