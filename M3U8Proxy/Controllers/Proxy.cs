@@ -33,8 +33,6 @@ public partial class Proxy : Controller
                 .WithShouldAddForwardedHeaders(false)
                 .WithBeforeSend((_, hrm) =>
                 {
-                    BeforeSendRemoveCors(hrm);
-
                     if (headersDictionary == null) return Task.CompletedTask;
 
                     BeforeSendAddHeaders(headersDictionary, hrm);
@@ -104,15 +102,4 @@ public partial class Proxy : Controller
         }
     }
 
-    private static void BeforeSendRemoveCors(HttpRequestMessage hrm)
-    {
-        foreach (var header in CorsBlockedHeaders.List)
-        {
-            var headerToRemove =
-                hrm.Headers.FirstOrDefault(h =>
-                    h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
-
-            if (headerToRemove != null) hrm.Headers.Remove(headerToRemove);
-        }
-    }
 }

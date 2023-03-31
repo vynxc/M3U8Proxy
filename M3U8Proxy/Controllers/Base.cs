@@ -11,24 +11,7 @@ namespace M3U8Proxy.Controllers;
 public class Base : Controller
 {
     private readonly FileStream _stream = System.IO.File.OpenRead(@"/root/Videos/outputintro.ts");
-
-    [HttpGet("cdn/outputintro.ts")]
-    public IActionResult Intro()
-    {
-        return File(_stream, "video/MP2T");
-    }
-
-
-    [HttpGet]
-    [Route("/ip")]
-    public ActionResult ClientIp()
-    {
-        var ip = Request.HttpContext.Connection.RemoteIpAddress?.MapToIPv4();
-
-        return Content($"Your IP address is: {ip}");
-    }
-
-    //TODO: Method Extactions
+    
     [HttpHead]
     [HttpGet]
     [Route("/{**url}")]
@@ -40,19 +23,6 @@ public class Base : Controller
         {
             var options = HttpProxyOptionsBuilder.Instance
                 .WithShouldAddForwardedHeaders(false)
-                .WithBeforeSend((_, hrm) =>
-                {
-                    foreach (var header in CorsBlockedHeaders.List)
-                    {
-                        var headerToRemove =
-                            hrm.Headers.FirstOrDefault(h =>
-                                h.Key.Equals(header, StringComparison.InvariantCultureIgnoreCase)).Key;
-                        if (headerToRemove != null)
-                            hrm.Headers.Remove(headerToRemove);
-                    }
-
-                    return Task.CompletedTask;
-                })
                 .WithHandleFailure(async (context, e) =>
                 {
                     context.Response.StatusCode = context.Response.StatusCode;
