@@ -26,22 +26,15 @@ builder.Services.AddCors(options =>
         policyBuilder =>
         {
             policyBuilder.WithOrigins("https://unime.vercel.app", "https://streamable.moe", "https://anistreme.live",
-                "https://www.hlsplayer.net");
+                "https://www.hlsplayer.net","https://anifox.moe");
         });
 });
 
 var app = builder.Build();
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                       ForwardedHeaders.XForwardedProto
-});
 
 app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
-
 app.UseOutputCache();
-
 app.MapGet("/hello", async context => { await context.Response.WriteAsync("Hello, Bitches!"); });
 app.UseAuthentication();
 app.MapControllers();
