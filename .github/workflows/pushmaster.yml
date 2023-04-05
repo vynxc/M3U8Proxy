@@ -18,7 +18,9 @@ jobs:
     # A sequence of tasks that will execute as part of the job
     steps:
     
-    
+      - name: Show current user
+        run: whoami
+
       - uses: actions/checkout@v3
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v1.7.2
