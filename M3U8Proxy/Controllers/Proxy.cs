@@ -1,6 +1,8 @@
 ﻿using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
 using M3U8Proxy.RequestHandler;
+using M3U8Proxy.RequestHandler.AfterReceive;
+using M3U8Proxy.RequestHandler.BeforeSend;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -34,9 +36,8 @@ public partial class Proxy : Controller
                 .WithBeforeSend((_, hrm) =>
                 {
                     if (headersDictionary == null) return Task.CompletedTask;
-
-                    BeforeSendAddHeaders(headersDictionary, hrm);
-
+                    BeforeSend.RemoveHeaders(hrm);
+                    BeforeSend.AddHeaders(headersDictionary, hrm); 
                     return Task.CompletedTask;
                 })
                 .WithHandleFailure(async (context, e) =>
@@ -46,8 +47,8 @@ public partial class Proxy : Controller
                 })
                 .WithAfterReceive((_, hrm) =>
                 {
-                    AfterReceiveRemoveCors(hrm);
-                    AfterReceiveAddForcedHeaders(forcedHeadersProxyDictionary, hrm);
+                    AfterReceive.RemoveHeaders(hrm);
+                    AfterReceive.AddForcedHeaders(forcedHeadersProxyDictionary, hrm);
                     return Task.CompletedTask;
                 })
                 .Build();
@@ -60,20 +61,7 @@ public partial class Proxy : Controller
         }
     }
 
-    private static void AfterReceiveAddForcedHeaders(Dictionary<string, string>? forcedHeadersProxyDictionary,
-        HttpResponseMessage hrm)
-    {
-        foreach (var header in forcedHeadersProxyDictionary)
-        {
-            var headerToRemove =
-                hrm.Content.Headers.FirstOrDefault(h =>
-                    h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key;
-
-            if (headerToRemove != null)
-                hrm.Content.Headers.Remove(headerToRemove);
-            hrm.Content.Headers.Add(header.Key, header.Value);
-        }
-    }
+    
 
     private void HandleExceptionResponse(Exception e)
     {
@@ -82,24 +70,6 @@ public partial class Proxy : Controller
         HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(e));
     }
 
-    private static void AfterReceiveRemoveCors(HttpResponseMessage hrm)
-    {
-        foreach (var header in CorsBlockedHeaders.List) hrm.Headers.Remove(header.ToLower());
-    }
-
-    private static void BeforeSendAddHeaders(Dictionary<string, string> headersDictionary, HttpRequestMessage hrm)
-    {
-        foreach (var header in headersDictionary)
-        {
-            var headerToRemove =
-                hrm.Headers.FirstOrDefault(h =>
-                    h.Key.Equals(header.Key, StringComparison.InvariantCultureIgnoreCase)).Key;
-
-            if (headerToRemove != null)
-                hrm.Headers.Remove(headerToRemove);
-
-            hrm.Headers.Add(header.Key, header.Value);
-        }
-    }
+   
 
 }

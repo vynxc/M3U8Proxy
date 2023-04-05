@@ -1,5 +1,7 @@
 ﻿using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
+using M3U8Proxy.RequestHandler.AfterReceive;
+using M3U8Proxy.RequestHandler.BeforeSend;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -21,6 +23,11 @@ public class Base : Controller
         {
             var options = HttpProxyOptionsBuilder.Instance
                 .WithShouldAddForwardedHeaders(false)
+                .WithBeforeSend((res,hrm)=>
+                {
+                    BeforeSend.RemoveHeaders(hrm); 
+                    return Task.CompletedTask; 
+                })
                 .WithHandleFailure(async (context, e) =>
                 {
                     context.Response.StatusCode = context.Response.StatusCode;
@@ -28,7 +35,7 @@ public class Base : Controller
                 })
                 .WithAfterReceive((res, hrm) =>
                 {
-                    foreach (var header in CorsBlockedHeaders.List) hrm.Headers.Remove(header.ToLower());
+                    AfterReceive.RemoveHeaders(hrm);
                     return Task.CompletedTask;
                 })
                 .Build();
