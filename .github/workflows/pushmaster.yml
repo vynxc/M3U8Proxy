@@ -26,7 +26,9 @@ jobs:
         uses: actions/setup-dotnet@v1.7.2
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-
+      - name: Stop the app
+        run: |
+          sudo systemctl stop m3u8-proxy.service  
 
       
       - name: Install dependencies
@@ -39,6 +41,6 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release -o /var/www/m3u8-proxy
         
-      - name: Restart the app
+      - name: Start the app
         run: |
-          sudo systemctl restart m3u8-proxy.service  
+          sudo systemctl start m3u8-proxy.service  
