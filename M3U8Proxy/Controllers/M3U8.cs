@@ -22,7 +22,7 @@ public partial class Proxy
         _m3U8Url = baseUrl + "proxy/m3u8/";
     }
 
-    //[OutputCache(PolicyName = "m3u8")]
+    [OutputCache(PolicyName = "m3u8")]
     [HttpHead]
     [HttpGet]
     [Route("m3u8/{url}/{headers?}/{type?}")]
