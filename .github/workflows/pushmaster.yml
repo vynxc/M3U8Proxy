@@ -41,5 +41,4 @@ jobs:
         
       - name: Restart the app
         run: |
-          export XDG_RUNTIME_DIR=/run/user/$(id -u)
-          systemctl restart m3u8-proxy.service  
+          sudo systemctl restart m3u8-proxy.service  
