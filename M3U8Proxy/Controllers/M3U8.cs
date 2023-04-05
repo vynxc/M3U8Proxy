@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Text;
 using M3U8Proxy.M3U8Parser;
 using M3U8Proxy.RequestHandler;
@@ -25,35 +26,39 @@ public partial class Proxy
     [HttpHead]
     [HttpGet]
     [Route("m3u8/{url}/{headers?}/{type?}")]
-    public IActionResult GetM3U8(string url, string? headers = "{}", [FromQuery] string? forcedHeadersProxy = "{}")
+    public async Task<IActionResult> GetM3U8(string url, string? headers = "{}", [FromQuery] string? forcedHeadersProxy = "{}")
     {
+        var stopwatchv1 = new Stopwatch();
+        stopwatchv1.Start();
         try
         {
             url = Uri.UnescapeDataString(url);
 
             headers = Uri.UnescapeDataString(headers!);
-            
+
             if (string.IsNullOrEmpty(url))
                 return BadRequest("URL Is Null Or Empty.");
 
             var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
-
-            var response = _reqHandler.MakeRequest(url, headersDictionary!);
-
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var response = await _reqHandler.MakeRequestV2(url, headersDictionary!);
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.Elapsed.Milliseconds);
+            if (response is not { StatusCode: HttpStatusCode.OK })
+                return BadRequest(JsonConvert.SerializeObject("""{"message":"Error while fetching the m3u8 file"}"""));
             HttpContext.Response.StatusCode = (int)response.StatusCode;
 
-            if (response.StatusCode != HttpStatusCode.OK)
-                return BadRequest(JsonConvert.SerializeObject("""{"message":"Error while fetching the m3u8 file"}"""));
+            ReqHandler.ManageResponseHeadersV2(response);
 
-            ReqHandler.ManageResponseHeaders(response);
+            var content = await response.Content.ReadAsStringAsync();
 
-            var lines = response.Content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
+            var lines = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             var isPlaylistM3U8 = IsPlaylistM3U8(lines);
-            
+
             var suffix = Uri.EscapeDataString(headers) + "?forcedHeadersProxy=" +
                          Uri.EscapeDataString(forcedHeadersProxy!);
-            
+
             var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? _m3U8Url : _proxyUrl, suffix,
                 isPlaylistM3U8);
 
@@ -63,6 +68,11 @@ public partial class Proxy
         catch (Exception e)
         {
             return BadRequest(JsonConvert.SerializeObject(e));
+        }
+        finally
+        {
+            stopwatchv1.Stop();
+            Console.WriteLine(stopwatchv1.Elapsed.Milliseconds);
         }
     }
 

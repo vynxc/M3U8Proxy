@@ -10,8 +10,6 @@ namespace M3U8Proxy.Controllers;
 [ApiController]
 public class Base : Controller
 {
-    private readonly FileStream _stream = System.IO.File.OpenRead(@"/root/Videos/outputintro.ts");
-    
     [HttpHead]
     [HttpGet]
     [Route("/{**url}")]
