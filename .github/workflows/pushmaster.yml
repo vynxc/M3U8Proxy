@@ -19,7 +19,7 @@ jobs:
     steps:
     
       - name: Show current user
-        run: whoami
+        run: dotnet --version
 
       - uses: actions/checkout@v3
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
