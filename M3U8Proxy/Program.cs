@@ -16,17 +16,16 @@ builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddProxies();
-
+var allowedOrigins =builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
 if (!builder.Environment.IsDevelopment())
     builder.WebHost.ConfigureKestrel(k => { k.ListenAnyIP(5001); });
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(myAllowSpecificOrigins,
         policyBuilder =>
-        {
-            policyBuilder.WithOrigins("https://unime.vercel.app", "https://streamable.moe", "https://anistreme.live",
-                "https://livepush.io","https://anifox.moe","https://www.ashanime.pro","http://localhost:5173");
+        {   
+            Console.WriteLine(allowedOrigins);
+            if (allowedOrigins != null) policyBuilder.WithOrigins(allowedOrigins);
         });
 });
 
