@@ -26,7 +26,7 @@ builder.Services.AddCors(options =>
         policyBuilder =>
         {
             policyBuilder.WithOrigins("https://unime.vercel.app", "https://streamable.moe", "https://anistreme.live",
-                "https://www.hlsplayer.net","https://anifox.moe","https://www.ashanime.pro","http://localhost:5173");
+                "https://livepush.io","https://anifox.moe","https://www.ashanime.pro","http://localhost:5173");
         });
 });
 
