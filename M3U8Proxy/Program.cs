@@ -25,7 +25,10 @@ builder.Services.AddCors(options =>
         policyBuilder =>
         {   
             Console.WriteLine(allowedOrigins);
-            if (allowedOrigins != null) policyBuilder.WithOrigins(allowedOrigins);
+            if (allowedOrigins != null) {
+            policyBuilder.WithOrigins(allowedOrigins);
+            }else{policyBuilder.AllowAnyOrigin();
+            }
         });
 });
 
