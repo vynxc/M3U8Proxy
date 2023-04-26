@@ -15,6 +15,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
         <PackageReference Include="protobuf-net" Version="3.2.12" />
         <PackageReference Include="StackExchange.Redis" Version="2.6.96" />
+        <PackageReference Include="YoutubeExplode" Version="6.2.12" />
     </ItemGroup>
 
 </Project>
