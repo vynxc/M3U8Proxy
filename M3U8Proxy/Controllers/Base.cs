@@ -13,6 +13,7 @@ namespace M3U8Proxy.Controllers;
 public class Base : Controller
 {
     [HttpHead]
+    [HttpPost]
     [HttpGet]
     [Route("/{**url}")]
     public Task ProxyTest(string url)

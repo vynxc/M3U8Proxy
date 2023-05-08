@@ -44,6 +44,9 @@ public partial class M3U8Paser
                 }
 
                 lines[i] = prefix + Uri.EscapeDataString(newLineBuilder.ToString()) + "/" + suffix;
+            }else if (lines[i].StartsWith("http"))
+            {
+                lines[i] = prefix +lines[i] + "/" + suffix;
             }
         }
 
