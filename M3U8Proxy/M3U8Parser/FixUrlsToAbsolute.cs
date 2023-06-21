@@ -10,11 +10,13 @@ public partial class M3U8Paser
     public M3U8Paser()
     {
         _getParamsRegex = GetParamsRegex();
+        Console.WriteLine(DateTime.Now);
     }
 
     [GeneratedRegex(@"\?.+", RegexOptions.Compiled)]
     private static partial Regex GetParamsRegex();
 
+    
     public static string FixAllUrls(string[] lines, string url, string prefix, string suffix, bool isPlaylistM3U8)
     {
         var parameters = GetParamsRegex().Match(url).Value;
@@ -23,9 +25,16 @@ public partial class M3U8Paser
         var index = url.LastIndexOf('/');
 
         var newLineBuilder = new StringBuilder();
+        string pattern = @"https?:\/\/[^\""\s]+";
 
         for (var i = 0; i < lines.Length; i++)
         {
+            if (lines[i].StartsWith("#EXT-X-KEY"))
+            {
+                lines[i] = Regex.Replace(lines[i], pattern, m => $"{prefix}{Uri.EscapeDataString(m.Value)}/{suffix}");
+
+            }
+            
             if (!lines[i].StartsWith("http") && !lines[i].StartsWith("#") && !string.IsNullOrWhiteSpace(lines[i]))
             {
                 newLineBuilder.Clear();
