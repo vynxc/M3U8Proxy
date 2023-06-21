@@ -10,7 +10,6 @@ public partial class M3U8Paser
     public M3U8Paser()
     {
         _getParamsRegex = GetParamsRegex();
-        Console.WriteLine(DateTime.Now);
     }
 
     [GeneratedRegex(@"\?.+", RegexOptions.Compiled)]
@@ -25,7 +24,7 @@ public partial class M3U8Paser
         var index = url.LastIndexOf('/');
 
         var newLineBuilder = new StringBuilder();
-        string pattern = @"https?:\/\/[^\""\s]+";
+        const string pattern = @"https?:\/\/[^\""\s]+";
 
         for (var i = 0; i < lines.Length; i++)
         {
