@@ -1,4 +1,5 @@
 using AspNetCore.Proxy;
+using M3U8Proxy.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
 
 const string myAllowSpecificOrigins = "corsPolicy";
@@ -35,7 +36,7 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
 app.UseOutputCache();
