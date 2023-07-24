@@ -18,8 +18,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddProxies();
 var allowedOrigins =builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
-if (!builder.Environment.IsDevelopment())
-    builder.WebHost.ConfigureKestrel(k => { k.ListenAnyIP(5001); });
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(myAllowSpecificOrigins,
