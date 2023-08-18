@@ -31,14 +31,19 @@ public class RequestLoggingMiddleware
     var url = context.Request.Path + context.Request.QueryString;
     var ipAddress = context.Connection.RemoteIpAddress;
 
+    if (ipAddress != null && ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+    {
+        _logger.LogInformation($"IPv4 Address: {ipAddress}");
+    }
+
     if (origin.Count > 0)
         _logger.LogInformation($"Origin: {origin}");
 
     if (referer.Count > 0)
         _logger.LogInformation($"Referer: {referer}");
 
-    _logger.LogInformation($"IP Address: {ipAddress}");
     _logger.LogInformation($"URL: {url}");
 }
+
 
 }
