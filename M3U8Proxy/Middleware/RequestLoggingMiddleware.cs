@@ -29,12 +29,9 @@ public class RequestLoggingMiddleware
     context.Request.Headers.TryGetValue("Origin", out var origin);
     context.Request.Headers.TryGetValue("Referer", out var referer);
     var url = context.Request.Path + context.Request.QueryString;
-    var ipAddress = context.Connection.RemoteIpAddress;
-
-    if (ipAddress != null && ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-    {
-        _logger.LogInformation($"IPv4 Address: {ipAddress}");
-    }
+    var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+    
+    _logger.LogInformation($"IPv4 Address: {ipAddress}");
 
     if (origin.Count > 0)
         _logger.LogInformation($"Origin: {origin}");
