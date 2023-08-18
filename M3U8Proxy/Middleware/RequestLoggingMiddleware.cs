@@ -29,7 +29,7 @@ public class RequestLoggingMiddleware
     context.Request.Headers.TryGetValue("Origin", out var origin);
     context.Request.Headers.TryGetValue("Referer", out var referer);
     var url = context.Request.Path + context.Request.QueryString;
-    var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+    var ipAddress = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()??"no ip";
     
     _logger.LogInformation($"IPv4 Address: {ipAddress}");
 
