@@ -38,10 +38,14 @@ public partial class M3U8Paser
             {
                 newLineBuilder.Clear();
 
-                if (lines[i].StartsWith("/"))
+                if (lines[i].StartsWith("/")&&!lines[i].StartsWith("//"))
                 {
                     newLineBuilder.Append(baseUrl);
                     newLineBuilder.Append(lines[i]);
+                    newLineBuilder.Append(parameters);
+                } else if (lines[i].StartsWith("//"))
+                {
+                    newLineBuilder.Append(lines[i].Replace("//","https://"));
                     newLineBuilder.Append(parameters);
                 }
                 else
