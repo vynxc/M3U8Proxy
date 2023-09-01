@@ -30,7 +30,18 @@ public partial class M3U8Paser
         {
             if (lines[i].StartsWith("#EXT-X-KEY"))
             {
-                lines[i] = Regex.Replace(lines[i], pattern, m => $"{prefix}{Uri.EscapeDataString(m.Value)}/{suffix}");
+                const string urIpattern = @"URI=""([^""]+)""";
+                var uriContent = Regex.Match(lines[i],urIpattern ).Value;
+                if (uriContent.StartsWith("/") && !uriContent.StartsWith("//"))
+                {
+                    lines[i] = Regex.Replace(lines[i], pattern, m => $"{prefix}{Uri.EscapeDataString(baseUrl+m.Value)}/{suffix}");
+                }else if (uriContent.StartsWith("//"))
+                {
+                    lines[i] = Regex.Replace(lines[i], pattern, m => $"{prefix}{Uri.EscapeDataString("https:"+m.Value)}/{suffix}");
+                }else
+                {
+                    lines[i] = Regex.Replace(lines[i], pattern, m => $"{prefix}{Uri.EscapeDataString(m.Value)}/{suffix}");
+                }
 
             }
             
@@ -45,7 +56,7 @@ public partial class M3U8Paser
                     newLineBuilder.Append(parameters);
                 } else if (lines[i].StartsWith("//"))
                 {
-                    newLineBuilder.Append(lines[i].Replace("//","https://"));
+                    newLineBuilder.Append("https:"+lines[i]);
                     newLineBuilder.Append(parameters);
                 }
                 else
