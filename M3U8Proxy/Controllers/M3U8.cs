@@ -55,10 +55,10 @@ public partial class Proxy
 
             var lines = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             var isPlaylistM3U8 = IsPlaylistM3U8(lines);
-
-            var suffix = Uri.EscapeDataString(headers) + "?forcedHeadersProxy=" +
-                         Uri.EscapeDataString(forcedHeadersProxy!);
-
+            var forcedHeadersString = forcedHeadersProxy == "{}" ? "" :
+                "?forcedHeadersProxy=" + Uri.EscapeDataString(forcedHeadersProxy!);
+            var headersString = headers?.Length == 0 ? "" : Uri.EscapeDataString(headers!);
+            var suffix = headersString + forcedHeadersString;
             var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? _m3U8Url : _proxyUrl, suffix,
                 isPlaylistM3U8);
 

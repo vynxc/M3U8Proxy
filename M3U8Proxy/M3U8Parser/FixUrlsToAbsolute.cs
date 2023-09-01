@@ -15,7 +15,7 @@ public partial class M3U8Paser
     [GeneratedRegex(@"\?.+", RegexOptions.Compiled)]
     private static partial Regex GetParamsRegex();
 
-    
+
     public static string FixAllUrls(string[] lines, string url, string prefix, string suffix, bool isPlaylistM3U8)
     {
         var parameters = GetParamsRegex().Match(url).Value;
@@ -31,32 +31,35 @@ public partial class M3U8Paser
             if (lines[i].StartsWith("#EXT-X-KEY"))
             {
                 const string urIpattern = @"URI=""([^""]+)""";
-                var uriContent = Regex.Match(lines[i],urIpattern ).Value;
+                var uriContent = Regex.Match(lines[i], urIpattern).Groups[1].Value;
+                Console.WriteLine(uriContent);
                 if (uriContent.StartsWith("/") && !uriContent.StartsWith("//"))
-                {
-                    lines[i] = Regex.Replace(lines[i], pattern, m => $"{prefix}{Uri.EscapeDataString(baseUrl+m.Value)}/{suffix}");
-                }else if (uriContent.StartsWith("//"))
-                {
-                    lines[i] = Regex.Replace(lines[i], pattern, m => $"{prefix}{Uri.EscapeDataString("https:"+m.Value)}/{suffix}");
-                }else
-                {
-                    lines[i] = Regex.Replace(lines[i], pattern, m => $"{prefix}{Uri.EscapeDataString(m.Value)}/{suffix}");
-                }
-
+                    lines[i] = Regex.Replace(lines[i], urIpattern, m => $"""
+URI="{prefix}{Uri.EscapeDataString(baseUrl + m.Groups[1].Value)}/{suffix}"
+""");
+                else if (uriContent.StartsWith("//"))
+                    lines[i] = Regex.Replace(lines[i], urIpattern,
+                        m => $"""
+                        URI="{prefix}{Uri.EscapeDataString("https:" + m.Groups[1].Value)}/{suffix}"
+                    """);       
+                else
+                    lines[i] = Regex.Replace(lines[i], pattern,
+                        m => $"{prefix}{Uri.EscapeDataString(m.Value)}/{suffix}");
             }
-            
+
             if (!lines[i].StartsWith("http") && !lines[i].StartsWith("#") && !string.IsNullOrWhiteSpace(lines[i]))
             {
                 newLineBuilder.Clear();
 
-                if (lines[i].StartsWith("/")&&!lines[i].StartsWith("//"))
+                if (lines[i].StartsWith("/") && !lines[i].StartsWith("//"))
                 {
                     newLineBuilder.Append(baseUrl);
                     newLineBuilder.Append(lines[i]);
                     newLineBuilder.Append(parameters);
-                } else if (lines[i].StartsWith("//"))
+                }
+                else if (lines[i].StartsWith("//"))
                 {
-                    newLineBuilder.Append("https:"+lines[i]);
+                    newLineBuilder.Append("https:" + lines[i]);
                     newLineBuilder.Append(parameters);
                 }
                 else
@@ -67,13 +70,13 @@ public partial class M3U8Paser
                 }
 
                 lines[i] = prefix + Uri.EscapeDataString(newLineBuilder.ToString()) + "/" + suffix;
-            }else if (lines[i].StartsWith("http"))
+            }
+            else if (lines[i].StartsWith("http"))
             {
-                lines[i] = prefix +Uri.EscapeDataString(lines[i]) + "/" + suffix;
+                lines[i] = prefix + Uri.EscapeDataString(lines[i]) + "/" + suffix;
             }
         }
 
         return string.Join(Environment.NewLine, lines);
     }
-
 }
