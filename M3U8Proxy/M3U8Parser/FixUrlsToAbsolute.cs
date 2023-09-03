@@ -28,7 +28,7 @@ public partial class M3U8Paser
 
         for (var i = 0; i < lines.Length; i++)
         {
-            if (lines[i].StartsWith("#EXT-X-KEY"))
+            if (lines[i].Contains("URI"))
             {
                 const string urIpattern = @"URI=""([^""]+)""";
                 var uriContent = Regex.Match(lines[i], urIpattern).Groups[1].Value;
