@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Text;
+using AngleSharp;
 using M3U8Proxy.M3U8Parser;
 using M3U8Proxy.RequestHandler;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Newtonsoft.Json;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace M3U8Proxy.Controllers;
 
@@ -13,13 +15,14 @@ public partial class Proxy
 {
     private readonly List<string> _listOfKeywords = new() { "#EXT-X-STREAM-INF", "#EXT-X-I-FRAME-STREAM-INF" };
     private readonly string _proxyUrl;
+    private readonly string _baseUrl;
     private readonly string _m3U8Url;
 
     public Proxy(IConfiguration configuration)
     {
-        var baseUrl = configuration["ProxyUrl"]!;
-        _proxyUrl = baseUrl + "proxy/";
-        _m3U8Url = baseUrl + "proxy/m3u8/";
+        _baseUrl = configuration["ProxyUrl"]!;
+        _proxyUrl = _baseUrl + "proxy/";
+        _m3U8Url = _baseUrl + "proxy/m3u8/";
     }
 
     [OutputCache(PolicyName = "m3u8")]
@@ -40,11 +43,7 @@ public partial class Proxy
                 return BadRequest("URL Is Null Or Empty.");
 
             var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
             var response = await _reqHandler.MakeRequestV2(url, headersDictionary!);
-            stopwatch.Stop();
-            Console.WriteLine(stopwatch.Elapsed.Milliseconds);
             if (response is not { StatusCode: HttpStatusCode.OK })
                 return BadRequest(JsonConvert.SerializeObject("""{"message":"Error while fetching the m3u8 file"}"""));
             HttpContext.Response.StatusCode = (int)response.StatusCode;

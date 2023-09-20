@@ -1,4 +1,5 @@
-﻿using AspNetCore.Proxy;
+﻿using System.Net.Http.Headers;
+using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
 using M3U8Proxy.RequestHandler;
 using M3U8Proxy.RequestHandler.AfterReceive;
@@ -37,7 +38,7 @@ public partial class Proxy : Controller
                 {
                     if (headersDictionary == null) return Task.CompletedTask;
                     BeforeSend.RemoveHeaders(hrm);
-                    BeforeSend.AddHeaders(headersDictionary, hrm); 
+                    BeforeSend.AddHeaders(headersDictionary, hrm);
                     return Task.CompletedTask;
                 })
                 .WithHandleFailure(async (context, e) =>
@@ -61,7 +62,43 @@ public partial class Proxy : Controller
         }
     }
 
-    
+    private readonly HttpClientHandler _handler = new()
+    {
+        AllowAutoRedirect = false
+    };
+
+    [Route("grabRedirect/{url}/{headers}")]
+    public async Task<IActionResult> Demo(string url, string? headers = "{}")
+    {
+        string? redirectedUrl = null;
+        try
+        {
+            url = Uri.UnescapeDataString(url);
+            headers = Uri.UnescapeDataString(headers!);
+            var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
+
+            var client = new HttpClient(_handler);
+            client.Timeout = TimeSpan.FromMinutes(15);
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            
+            if (headersDictionary != null)
+                foreach (var keyValuePair in headersDictionary)
+                    request.Headers.Add(keyValuePair.Key, keyValuePair.Value);
+            var response = await client.SendAsync(request);
+
+            if (response.Headers.Location != null)
+                redirectedUrl = response.Headers.Location.AbsoluteUri;
+
+            return Ok(new
+            {
+                url = redirectedUrl!=null? _baseUrl+redirectedUrl : null,
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(JsonConvert.SerializeObject(e));
+        }
+    }
 
     private void HandleExceptionResponse(Exception e)
     {
@@ -69,7 +106,4 @@ public partial class Proxy : Controller
         HttpContext.Response.ContentType = "application/json";
         HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(e));
     }
-
-   
-
 }
