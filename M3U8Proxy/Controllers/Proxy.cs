@@ -67,7 +67,7 @@ public partial class Proxy : Controller
         AllowAutoRedirect = false
     };
 
-    [Route("grabRedirect/{url}/{headers}")]
+    [Route("grabRedirect/{url}/{headers?}")]
     public async Task<IActionResult> Demo(string url, string? headers = "{}")
     {
         string? redirectedUrl = null;
