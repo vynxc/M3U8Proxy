@@ -28,7 +28,7 @@ public partial class M3U8Paser
 
         for (var i = 0; i < lines.Length; i++)
         {
-            if (lines[i].StartsWith("#EXT-X-KEY"))
+            if (lines[i].Contains("URI"))
             {
                 const string urIpattern = @"URI=""([^""]+)""";
                 var uriContent = Regex.Match(lines[i], urIpattern).Groups[1].Value;
@@ -42,9 +42,15 @@ URI="{prefix}{Uri.EscapeDataString(baseUrl + m.Groups[1].Value)}/{suffix}"
                         m => $"""
                         URI="{prefix}{Uri.EscapeDataString("https:" + m.Groups[1].Value)}/{suffix}"
                     """);       
-                else
+                else if (lines[i].StartsWith("http")) 
                     lines[i] = Regex.Replace(lines[i], pattern,
                         m => $"{prefix}{Uri.EscapeDataString(m.Value)}/{suffix}");
+                else
+                    lines[i] = Regex.Replace(lines[i], urIpattern,
+                        m => $"""
+                        URI="{prefix}{Uri.EscapeDataString(url[..(index + 1)] + m.Groups[1].Value)}/{suffix}"
+                    """);
+                                             
             }
 
             if (!lines[i].StartsWith("http") && !lines[i].StartsWith("#") && !string.IsNullOrWhiteSpace(lines[i]))
