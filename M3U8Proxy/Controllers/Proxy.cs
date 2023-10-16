@@ -36,6 +36,7 @@ public partial class Proxy : Controller
                 .WithShouldAddForwardedHeaders(false)
                 .WithBeforeSend((_, hrm) =>
                 {
+                    hrm.Headers.Remove("Host");
                     if (headersDictionary == null) return Task.CompletedTask;
                     BeforeSend.RemoveHeaders(hrm);
                     BeforeSend.AddHeaders(headersDictionary, hrm);

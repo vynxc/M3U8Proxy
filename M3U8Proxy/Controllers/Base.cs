@@ -26,6 +26,7 @@ public class Base : Controller
                 .WithShouldAddForwardedHeaders(false)
                 .WithBeforeSend((res,hrm)=>
                 {
+                    hrm.Headers.Remove("Host");
                     BeforeSend.RemoveHeaders(hrm); 
                     return Task.CompletedTask; 
                 })
