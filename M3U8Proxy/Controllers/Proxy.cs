@@ -37,12 +37,13 @@ public partial class Proxy : Controller
                 .WithShouldAddForwardedHeaders(false)
                 .WithBeforeSend((_, hrm) =>
                 {
-                    hrm.Headers.Remove("Host");
-                    hrm.Headers.Remove("Cross-Origin-Resource-Policy");
-                    hrm.Headers.Add("Cross-Origin-Resource-Policy","*");
+                    
                     if (headersDictionary == null) return Task.CompletedTask;
                     BeforeSend.RemoveHeaders(hrm);
                     BeforeSend.AddHeaders(headersDictionary, hrm);
+                    hrm.Headers.Remove("Host");
+                    hrm.Headers.Remove("Cross-Origin-Resource-Policy");
+                    hrm.Headers.Add("Cross-Origin-Resource-Policy","*");
                     return Task.CompletedTask;
                 })
                 .WithHandleFailure(async (context, e) =>

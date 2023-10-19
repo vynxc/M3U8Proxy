@@ -26,10 +26,10 @@ public class Base : Controller
                 .WithShouldAddForwardedHeaders(false)
                 .WithBeforeSend((res,hrm)=>
                 {
+                    BeforeSend.RemoveHeaders(hrm); 
                     hrm.Headers.Remove("Host");
                     hrm.Headers.Remove("Cross-Origin-Resource-Policy");
                     hrm.Headers.Add("Cross-Origin-Resource-Policy","*");
-                    BeforeSend.RemoveHeaders(hrm); 
                     return Task.CompletedTask; 
                 })
                 .WithHandleFailure(async (context, e) =>
