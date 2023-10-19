@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Text;
+using System.Web;
 using AngleSharp;
 using M3U8Proxy.M3U8Parser;
 using M3U8Proxy.RequestHandler;
@@ -35,9 +36,9 @@ public partial class Proxy
         stopwatchv1.Start();
         try
         {
-            url = Uri.UnescapeDataString(url);
+            url = HttpUtility.UrlDecode(url);
 
-            headers = Uri.UnescapeDataString(headers!);
+            headers = HttpUtility.UrlDecode(headers!);
 
             if (string.IsNullOrEmpty(url))
                 return BadRequest("URL Is Null Or Empty.");

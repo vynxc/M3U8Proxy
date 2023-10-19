@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Web;
 using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
 using M3U8Proxy.RequestHandler;
@@ -24,9 +25,9 @@ public partial class Proxy : Controller
     {
         try
         {
-            url = Uri.UnescapeDataString(url);
-            headers = Uri.UnescapeDataString(headers!);
-            forcedHeadersProxy = Uri.UnescapeDataString(forcedHeadersProxy!);
+            url = HttpUtility.UrlDecode(url);
+            headers = HttpUtility.UrlDecode(headers!);
+            forcedHeadersProxy = HttpUtility.UrlDecode(forcedHeadersProxy!);
 
             var forcedHeadersProxyDictionary =
                 JsonConvert.DeserializeObject<Dictionary<string, string>>(forcedHeadersProxy);
@@ -76,8 +77,8 @@ public partial class Proxy : Controller
         string? redirectedUrl = null;
         try
         {
-            url = Uri.UnescapeDataString(url);
-            headers = Uri.UnescapeDataString(headers!);
+            url = HttpUtility.UrlDecode(url);
+            headers = HttpUtility.UrlDecode(headers!);
             var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(headers);
 
             var client = new HttpClient(_handler);
