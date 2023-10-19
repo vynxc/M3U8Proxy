@@ -28,8 +28,7 @@ public class Base : Controller
                 {
                     BeforeSend.RemoveHeaders(hrm); 
                     hrm.Headers.Remove("Host");
-                    hrm.Headers.Remove("Cross-Origin-Resource-Policy");
-                    hrm.Headers.Add("Cross-Origin-Resource-Policy","*");
+                    
                     return Task.CompletedTask; 
                 })
                 .WithHandleFailure(async (context, e) =>
@@ -40,6 +39,8 @@ public class Base : Controller
                 .WithAfterReceive((res, hrm) =>
                 {
                     AfterReceive.RemoveHeaders(hrm);
+                    hrm.Headers.Remove("Cross-Origin-Resource-Policy");
+                    hrm.Headers.Add("Cross-Origin-Resource-Policy","*");
                     return Task.CompletedTask;
                 })
                 .Build();
