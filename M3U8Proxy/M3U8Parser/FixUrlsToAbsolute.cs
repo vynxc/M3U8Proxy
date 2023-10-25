@@ -27,29 +27,29 @@ public partial class M3U8Paser
         const string urIpattern = @"URI=""([^""]+)""";
         for (var i = 0; i < lines.Length; i++)
         {
-            var uriContent = Regex.Match(lines[i], urIpattern).Groups[1].Value;
-            Console.WriteLine(uriContent);
-
-            Uri uriExtracted;
-
-            if (Uri.TryCreate(uriContent, UriKind.RelativeOrAbsolute, out uriExtracted))
+            if (lines[i].Contains("URI"))
             {
-                Uri baseUri = new Uri(baseUrl);
-                Uri newUri;
+                var uriContent = Regex.Match(lines[i], urIpattern).Groups[1].Value;
+                Console.WriteLine(uriContent);
 
-                if (!uriExtracted.IsAbsoluteUri)
+                Uri uriExtracted;
+
+                if (Uri.TryCreate(uriContent, UriKind.RelativeOrAbsolute, out uriExtracted))
                 {
-                    newUri = new Uri(baseUri, uriExtracted);
-                }
-                else
-                {
-                    newUri = uriExtracted;
-                }
+                    var baseUri = new Uri(baseUrl);
+                    Uri newUri;
 
-                string substitutedUri = $"{prefix}{Uri.EscapeDataString(newUri.ToString())}/{suffix}";
+                    if (!uriExtracted.IsAbsoluteUri)
+                        newUri = new Uri(baseUri, uriExtracted);
+                    else
+                        newUri = uriExtracted;
 
-                lines[i] = Regex.Replace(lines[i], urIpattern, m => $"URI=\"{substitutedUri}\"");
+                    var substitutedUri = $"{prefix}{Uri.EscapeDataString(newUri.ToString())}/{suffix}";
+
+                    lines[i] = Regex.Replace(lines[i], urIpattern, m => $"URI=\"{substitutedUri}\"");
+                }
             }
+
             if (!lines[i].StartsWith("http") && !lines[i].StartsWith("#") && !string.IsNullOrWhiteSpace(lines[i]))
             {
                 newLineBuilder.Clear();
