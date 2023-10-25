@@ -24,35 +24,32 @@ public partial class M3U8Paser
         var index = url.LastIndexOf('/');
 
         var newLineBuilder = new StringBuilder();
-        const string pattern = @"https?:\/\/[^\""\s]+";
-
+        const string urIpattern = @"URI=""([^""]+)""";
         for (var i = 0; i < lines.Length; i++)
         {
-            if (lines[i].Contains("URI"))
-            {
-                const string urIpattern = @"URI=""([^""]+)""";
-                var uriContent = Regex.Match(lines[i], urIpattern).Groups[1].Value;
-                Console.WriteLine(uriContent);
-                if (uriContent.StartsWith("/") && !uriContent.StartsWith("//"))
-                    lines[i] = Regex.Replace(lines[i], urIpattern, m => $"""
-URI="{prefix}{Uri.EscapeDataString(baseUrl + m.Groups[1].Value)}/{suffix}"
-""");
-                else if (uriContent.StartsWith("//"))
-                    lines[i] = Regex.Replace(lines[i], urIpattern,
-                        m => $"""
-                        URI="{prefix}{Uri.EscapeDataString("https:" + m.Groups[1].Value)}/{suffix}"
-                    """);       
-                else if (lines[i].StartsWith("http")) 
-                    lines[i] = Regex.Replace(lines[i], pattern,
-                        m => $"{prefix}{Uri.EscapeDataString(m.Value)}/{suffix}");
-                else
-                    lines[i] = Regex.Replace(lines[i], urIpattern,
-                        m => $"""
-                        URI="{prefix}{Uri.EscapeDataString(url[..(index + 1)] + m.Groups[1].Value)}/{suffix}"
-                    """);
-                                             
-            }
+            var uriContent = Regex.Match(lines[i], urIpattern).Groups[1].Value;
+            Console.WriteLine(uriContent);
 
+            Uri uriExtracted;
+
+            if (Uri.TryCreate(uriContent, UriKind.RelativeOrAbsolute, out uriExtracted))
+            {
+                Uri baseUri = new Uri(baseUrl);
+                Uri newUri;
+
+                if (!uriExtracted.IsAbsoluteUri)
+                {
+                    newUri = new Uri(baseUri, uriExtracted);
+                }
+                else
+                {
+                    newUri = uriExtracted;
+                }
+
+                string substitutedUri = $"{prefix}{Uri.EscapeDataString(newUri.ToString())}/{suffix}";
+
+                lines[i] = Regex.Replace(lines[i], urIpattern, m => $"URI=\"{substitutedUri}\"");
+            }
             if (!lines[i].StartsWith("http") && !lines[i].StartsWith("#") && !string.IsNullOrWhiteSpace(lines[i]))
             {
                 newLineBuilder.Clear();
