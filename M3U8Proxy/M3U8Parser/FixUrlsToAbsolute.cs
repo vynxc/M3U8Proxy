@@ -21,8 +21,7 @@ public partial class M3U8Paser
             if (!isUri && (lines[i].StartsWith("#") || string.IsNullOrWhiteSpace(lines[i]))) continue;
             var uriContent = isUri?Regex.Match(lines[i], uriPattern).Groups[1].Value:lines[i];
             if (!Uri.TryCreate(uriContent, UriKind.RelativeOrAbsolute, out var uriExtracted)) continue;
-            var baseUri = new Uri(baseUrl);
-            var newUri = !uriExtracted.IsAbsoluteUri ? new Uri(baseUri, uriExtracted) : uriExtracted;
+            var newUri = !uriExtracted.IsAbsoluteUri ? new Uri(uri, uriExtracted) : uriExtracted;
             var substitutedUri = $"{prefix}{Uri.EscapeDataString(newUri+parameters)}{suffix}";
             var test = Regex.Replace(lines[i], uriPattern, m => $"URI=\"{substitutedUri}\"");
             lines[i] = isUri?test:substitutedUri;
