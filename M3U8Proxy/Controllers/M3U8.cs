@@ -30,10 +30,10 @@ public partial class Proxy
     [HttpHead]
     [HttpGet]
     [Route("m3u8/{url}/{headers?}/{type?}")]
-    public async Task<IActionResult> GetM3U8(string url, string? headers = "{}", [FromQuery] string? forcedHeadersProxy = "{}")
+    public async Task<IActionResult> GetM3U8(string url, string? headers = "{}",
+        [FromQuery] string? forcedHeadersProxy = "{}")
     {
-        var stopwatchv1 = new Stopwatch();
-        stopwatchv1.Start();
+        
         try
         {
             url = HttpUtility.UrlDecode(url);
@@ -48,19 +48,17 @@ public partial class Proxy
             if (response is not { StatusCode: HttpStatusCode.OK })
                 return BadRequest(JsonConvert.SerializeObject("""{"message":"Error while fetching the m3u8 file"}"""));
             HttpContext.Response.StatusCode = (int)response.StatusCode;
-
             ReqHandler.ManageResponseHeadersV2(response);
-
             var content = await response.Content.ReadAsStringAsync();
-
             var lines = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             var isPlaylistM3U8 = IsPlaylistM3U8(lines);
-            var forcedHeadersString = forcedHeadersProxy == "{}" ? "" :
-                "?forcedHeadersProxy=" + Uri.EscapeDataString(forcedHeadersProxy!);
-            var headersString = headers?.Length == 0 ? "" : Uri.EscapeDataString(headers!);
+            var forcedHeadersString = forcedHeadersProxy == "{}"
+                ? ""
+                : "?forcedHeadersProxy=" + Uri.EscapeDataString(forcedHeadersProxy!);
+            var headersString = headers == "{}" ? "" : Uri.EscapeDataString(headers!);
             var suffix = headersString + forcedHeadersString;
-            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? _m3U8Url : _proxyUrl, suffix,
-                isPlaylistM3U8);
+            if (suffix != "") suffix = "/" + suffix;
+            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? _m3U8Url : _proxyUrl, suffix);
 
             return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
                 $"{GenerateRandomId(10)}.m3u8");
@@ -69,11 +67,7 @@ public partial class Proxy
         {
             return BadRequest(JsonConvert.SerializeObject(e));
         }
-        finally
-        {
-            stopwatchv1.Stop();
-            Console.WriteLine(stopwatchv1.Elapsed.Milliseconds);
-        }
+
     }
 
     private bool IsPlaylistM3U8(string[] lines)
