@@ -64,9 +64,8 @@ public partial class Proxy
                 return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
                     $"{GenerateRandomId(10)}.m3u8");
             }
-            HttpContext.Response.Headers.Add("Content-Type","application/vnd.apple.mpegurl");
-            HttpContext.Response.Headers.Add("Content-Length",finalContent.Length.ToString());
-            return Ok(finalContent);
+            
+            return Content(finalContent,"application/vnd.apple.mpegurl");
         }
         catch (Exception e)
         {
