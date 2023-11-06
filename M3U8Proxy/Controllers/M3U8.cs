@@ -31,7 +31,7 @@ public partial class Proxy
     [HttpGet]
     [Route("m3u8/{url}/{headers?}/{type?}")]
     public async Task<IActionResult> GetM3U8(string url, string? headers = "{}",
-        [FromQuery] string? forcedHeadersProxy = "{}")
+        [FromQuery] string? forcedHeadersProxy = "{}",[FromQuery] bool? file=true)
     {
         
         try
@@ -59,9 +59,14 @@ public partial class Proxy
             var suffix = headersString + forcedHeadersString;
             if (suffix != "") suffix = "/" + suffix;
             var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? _m3U8Url : _proxyUrl, suffix);
-
-            return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
-                $"{GenerateRandomId(10)}.m3u8");
+            if(file == true)
+            {
+                return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
+                    $"{GenerateRandomId(10)}.m3u8");
+            }
+            HttpContext.Response.Headers.Add("Content-Type","application/vnd.apple.mpegurl");
+            HttpContext.Response.Headers.Add("Content-Length",finalContent.length);
+            return Ok(finalContent);
         }
         catch (Exception e)
         {
