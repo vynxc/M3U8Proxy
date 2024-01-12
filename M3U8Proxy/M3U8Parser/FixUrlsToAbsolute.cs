@@ -23,7 +23,7 @@ public partial class M3U8Paser
             var uriContent = isUri ? Regex.Match(lines[i], uriPattern).Groups[1].Value : lines[i];
             if (!Uri.TryCreate(uriContent, UriKind.RelativeOrAbsolute, out var uriExtracted)) continue;
             var newUri = !uriExtracted.IsAbsoluteUri ? new Uri(uri, uriExtracted) : uriExtracted;
-            var substitutedUri = $"{prefix}{EncodeUrl(newUri + parameters,encrypted)}{suffix}";
+            var substitutedUri = $"{prefix}{EncodeUrl(newUri + parameters,encrypted&&isPlaylist)}{suffix}";
             var test = Regex.Replace(lines[i], uriPattern, m => $"URI=\"{substitutedUri}\"");
             lines[i] = isUri ? test : substitutedUri;
         }
@@ -39,6 +39,7 @@ public partial class M3U8Paser
         var lastIndex = 0;
         for (var i =0; i < lines.Length; i++)
         {
+            Console.WriteLine(lines[i]);
             if (lines[i].StartsWith("#")) continue;
             lastIndex = i-1;
             break;

@@ -69,7 +69,6 @@ public partial class Proxy
             url = HttpUtility.UrlDecode(url);
             Console.WriteLine(url);
             headers = HttpUtility.UrlDecode(headers!);
-            Console.WriteLine(headers);
             if (string.IsNullOrEmpty(url))
                 return BadRequest("URL Is Null Or Empty.");
 
@@ -88,7 +87,10 @@ public partial class Proxy
             var headersString = headers == "{}" ? "" : Uri.EscapeDataString(headers!);
             var suffix = headersString + forcedHeadersString;
             if (suffix != "") suffix = "/" + suffix;
-            var prefix =encrypted ? _encryptedUrl: isPlaylistM3U8 ? _m3U8Url : _proxyUrl;
+            var prefix =isPlaylistM3U8 ? _m3U8Url : _proxyUrl;
+            
+            if(encrypted&&isPlaylistM3U8)
+                prefix = _encryptedUrl;
             
             var finalContent = M3U8Paser.FixAllUrls(lines, url, prefix, suffix,encrypted,isPlaylistM3U8);
 
