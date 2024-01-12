@@ -50,7 +50,7 @@ public partial class Proxy
         var url = Decrypt(encryptedUrl);
         return await GetM3U8(url, headers,forcedHeadersProxy,true);
     }
-    [Route("/encrypt/{data}")]
+    
     public string Encrypt(string data)
     {
         return Uri.EscapeDataString(AES.Encrypt(data));
