@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using AngleSharp;
@@ -18,28 +19,57 @@ public partial class Proxy
     private readonly string _proxyUrl;
     private readonly string _baseUrl;
     private readonly string _m3U8Url;
-
+    private readonly string _encryptedUrl;
     public Proxy(IConfiguration configuration)
     {
         _baseUrl = configuration["ProxyUrl"]!;
         _proxyUrl = _baseUrl + "proxy/";
         _m3U8Url = _baseUrl + "proxy/m3u8/";
+        _encryptedUrl = _baseUrl + "video/";
     }
+
 
     [OutputCache(PolicyName = "m3u8")]
     [HttpHead]
     [HttpGet]
     [Route("m3u8/{url}/{headers?}/{type?}")]
-    public async Task<IActionResult> GetM3U8(string url, string? headers = "{}",
+    public async Task<IActionResult> GetM3U8Full(string url, string? headers = "{}",
         [FromQuery] string? forcedHeadersProxy = "{}")
+    {
+        return await GetM3U8(url, headers, forcedHeadersProxy);
+    }
+    
+    
+    [OutputCache(PolicyName = "m3u8")]
+    [HttpHead]
+    [HttpGet]
+    [Route("/video/{encryptedUrl}/{headers?}/{type?}")]
+    public async Task<IActionResult> GetM3U8Spoofed(string encryptedUrl, string? headers = "{}",
+        [FromQuery] string? forcedHeadersProxy = "{}")
+    {
+        var url = Decrypt(encryptedUrl);
+        return await GetM3U8(url, headers,forcedHeadersProxy,true);
+    }
+    [Route("/encrypt/{data}")]
+    public string Encrypt(string data)
+    {
+        return Uri.EscapeDataString(AES.Encrypt(data));
+    }
+    
+    public string Decrypt(string encryptedData)
+    {
+        return AES.Decrypt(Uri.UnescapeDataString(encryptedData));
+    }
+    public async Task<IActionResult> GetM3U8(string url, string? headers = "{}",
+        [FromQuery] string? forcedHeadersProxy = "{}",bool encrypted = false)
     {
         
         try
         {
             url = HttpUtility.UrlDecode(url);
-
+            Console.WriteLine(url);
             headers = HttpUtility.UrlDecode(headers!);
-
+            Console.WriteLine(headers);
             if (string.IsNullOrEmpty(url))
                 return BadRequest("URL Is Null Or Empty.");
 
@@ -58,7 +88,9 @@ public partial class Proxy
             var headersString = headers == "{}" ? "" : Uri.EscapeDataString(headers!);
             var suffix = headersString + forcedHeadersString;
             if (suffix != "") suffix = "/" + suffix;
-            var finalContent = M3U8Paser.FixAllUrls(lines, url, isPlaylistM3U8 ? _m3U8Url : _proxyUrl, suffix);
+            var prefix =encrypted ? _encryptedUrl: isPlaylistM3U8 ? _m3U8Url : _proxyUrl;
+            
+            var finalContent = M3U8Paser.FixAllUrls(lines, url, prefix, suffix,encrypted,isPlaylistM3U8);
 
             return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
                 $"{GenerateRandomId(10)}.m3u8");
@@ -70,6 +102,8 @@ public partial class Proxy
 
     }
 
+    
+    
     private bool IsPlaylistM3U8(string[] lines)
     {
         var isPlaylistM3U8 = false;

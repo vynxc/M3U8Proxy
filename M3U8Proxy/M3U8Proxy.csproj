@@ -25,5 +25,9 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Intro\segment0.ts" />
+    </ItemGroup>
+
 
 </Project>

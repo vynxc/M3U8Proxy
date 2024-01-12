@@ -1,4 +1,5 @@
-﻿using AspNetCore.Proxy;
+﻿using System.Reflection;
+using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
 using M3U8Proxy.RequestHandler.AfterReceive;
 using M3U8Proxy.RequestHandler.BeforeSend;
@@ -12,6 +13,12 @@ namespace M3U8Proxy.Controllers;
 [ApiController]
 public class Base : Controller
 {
+    private readonly Assembly _assembly;
+
+   public Base()
+    {
+        _assembly = Assembly.GetExecutingAssembly();
+    }
     [HttpHead]
     [HttpPost]
     [HttpGet]
@@ -54,5 +61,19 @@ public class Base : Controller
             HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(e));
             return Task.FromResult(0);
         }
+    }
+    
+    [Route("/video/intro.ts")]
+    public IActionResult Intro()
+    {
+        var resourceName = "M3U8Proxy.Intro.segment0.ts";
+        var stream = _assembly.GetManifestResourceStream(resourceName);
+
+        if (stream != null)
+        {
+            return File(stream, "video/mp2t");
+        }
+
+        return NotFound();
     }
 }
