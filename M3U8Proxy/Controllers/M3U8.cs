@@ -92,7 +92,7 @@ public partial class Proxy
             if(encrypted&&isPlaylistM3U8)
                 prefix = _encryptedUrl;
             
-            var finalContent = M3U8Paser.FixAllUrls(lines, url, prefix, suffix,encrypted,isPlaylistM3U8);
+            var finalContent = M3U8Paser.FixAllUrls(lines, url, prefix, suffix,encrypted,isPlaylistM3U8,_baseUrl);
 
             return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
                 $"{GenerateRandomId(10)}.m3u8");

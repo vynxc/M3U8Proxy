@@ -7,14 +7,15 @@ public partial class M3U8Paser
     [GeneratedRegex(@"\?.+", RegexOptions.Compiled)]
     private static partial Regex GetParamsRegex();
 
-    public static string FixAllUrls(string[] lines, string url, string prefix, string suffix,bool encrypted,bool isPlaylist)
+    
+    public static string FixAllUrls(string[] lines, string url, string prefix, string suffix,bool encrypted,bool isPlaylist,string baseUrl)
     {
         var parameters = GetParamsRegex().Match(url).Value;
         var uri = new Uri(url);
         const string uriPattern = @"URI=""([^""]+)""";
         if (encrypted&&!isPlaylist)
         {
-            lines = InsertIntro(lines);
+            lines = InsertIntro(lines,baseUrl);
         }
         for (var i = 0; i < lines.Length; i++)
         {
@@ -34,7 +35,7 @@ public partial class M3U8Paser
     {
         return Uri.EscapeDataString(encrypted ? AES.Encrypt(url) : url);
     }
-    private static string[] InsertIntro(string[] lines)
+    private static string[] InsertIntro(string[] lines,string baseUrl)
     {
         var lastIndex = 0;
         for (var i =0; i < lines.Length; i++)
@@ -48,7 +49,7 @@ public partial class M3U8Paser
         var lastLineText = lines[lastIndex];
         var testToInsert = new [] {
             "#EXTINF:6.266667,",
-            "http://localhost:5196/video/intro.ts",
+            baseUrl+"video/intro.ts",
             "#EXT-X-DISCONTINUITY",
             lastLineText
         };
