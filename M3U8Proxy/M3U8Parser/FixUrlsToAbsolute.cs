@@ -15,7 +15,7 @@ public partial class M3U8Parser
         var uri = new Uri(url);
         const string uriPattern = @"URI=""([^""]+)""";
         var isEncodedSegments = ContainsString(lines, "EXT-X-KEY");
-        if (isEncodedSegments != -1)
+        if (isEncodedSegments != -1 &&false)//disabled for now
         {
             var isAes128 = lines[isEncodedSegments].Contains("AES-128");
             if (isAes128)
@@ -38,7 +38,7 @@ public partial class M3U8Parser
                 }
             }
         }
-        else if (encrypted && !isPlaylist)
+        else if (encrypted && !isPlaylist&&isEncodedSegments==-1)
         {
             lines = InsertIntro(lines, baseUrl);
         }
