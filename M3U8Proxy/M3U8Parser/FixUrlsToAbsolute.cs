@@ -13,7 +13,7 @@ public partial class M3U8Paser
         var parameters = GetParamsRegex().Match(url).Value;
         var uri = new Uri(url);
         const string uriPattern = @"URI=""([^""]+)""";
-        if (encrypted&&!isPlaylist)
+        if (encrypted&&!isPlaylist&&!IsEncoded(lines))
         {
             lines = InsertIntro(lines,baseUrl);
         }
@@ -56,5 +56,14 @@ public partial class M3U8Paser
         
         lines[lastIndex] = string.Join(Environment.NewLine, testToInsert);
         return lines;
+    }
+    private static bool IsEncoded(string[] lines)
+    {
+        for (var i = 0; i < lines.Length || i < 10; i++)
+        {
+            if (lines[i].Contains("EXT-X-KEY"))
+                return true;
+        }
+        return false;
     }
 }
