@@ -67,7 +67,6 @@ public partial class Proxy
         try
         {
             url = HttpUtility.UrlDecode(url);
-            Console.WriteLine(url);
             headers = HttpUtility.UrlDecode(headers!);
             if (string.IsNullOrEmpty(url))
                 return BadRequest("URL Is Null Or Empty.");

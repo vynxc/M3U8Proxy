@@ -40,7 +40,6 @@ app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
 app.UseOutputCache();
 app.MapGet("/hello", async context => {
-    Console.WriteLine("Hello, Bitches!");
     await context.Response.WriteAsync("Hello, Bitches!"); });
 app.UseAuthentication();
 app.MapControllers();

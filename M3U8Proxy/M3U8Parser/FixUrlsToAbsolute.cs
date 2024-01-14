@@ -13,7 +13,28 @@ public partial class M3U8Paser
         var parameters = GetParamsRegex().Match(url).Value;
         var uri = new Uri(url);
         const string uriPattern = @"URI=""([^""]+)""";
-        if (encrypted&&!isPlaylist&&!IsEncoded(lines))
+        var isEncodedSegments = ContainsString(lines,"EXT-X-KEY");
+        if (isEncodedSegments != -1)
+        {
+            var isAes128 = lines[isEncodedSegments].Contains("AES-128");
+            if (isAes128)
+            {
+                //change media sequence to be +1
+                var mediaSequenceIndex = ContainsString(lines,"#EXT-X-MEDIA-SEQUENCE");
+                if(mediaSequenceIndex != -1)
+                    lines[mediaSequenceIndex] = Regex.Replace(lines[mediaSequenceIndex],@"#EXT-X-MEDIA-SEQUENCE:(\d+)",m=> $"#EXT-X-MEDIA-SEQUENCE:{int.Parse(m.Groups[1].Value)+1}");
+                
+                var keyUrl = Regex.Match(lines[isEncodedSegments], @"URI=""([^""]+)""").Groups[1].Value;
+                Console.WriteLine(keyUrl);
+                var key = GetKey(keyUrl).Result;
+                if (key != null)
+                {
+                    var keyString = BitConverter.ToString(key).Replace("-", "").ToLower();
+                    Console.WriteLine(keyString);
+                    lines = InsertIntro(lines,baseUrl,keyString);
+                }
+            }
+        }else if (encrypted&&!isPlaylist)
         {
             lines = InsertIntro(lines,baseUrl);
         }
@@ -35,21 +56,21 @@ public partial class M3U8Paser
     {
         return Uri.EscapeDataString(encrypted ? AES.Encrypt(url) : url);
     }
-    private static string[] InsertIntro(string[] lines,string baseUrl)
+    private static string[] InsertIntro(string[] lines,string baseUrl,string? key = null)
     {
         var lastIndex = 0;
         for (var i =0; i < lines.Length; i++)
         {
-            Console.WriteLine(lines[i]);
             if (lines[i].StartsWith("#")) continue;
             lastIndex = i-1;
             break;
 
         }
+        var keyParam = key!=null?"?key="+key:"";
         var lastLineText = lines[lastIndex];
         var testToInsert = new [] {
             "#EXTINF:6.266667,",
-            baseUrl+"video/intro.ts",
+            baseUrl+"video/intro.ts"+keyParam,
             "#EXT-X-DISCONTINUITY",
             lastLineText
         };
@@ -57,13 +78,40 @@ public partial class M3U8Paser
         lines[lastIndex] = string.Join(Environment.NewLine, testToInsert);
         return lines;
     }
-    private static bool IsEncoded(string[] lines)
+    private static int ContainsString(string[] lines,string toFind,int maxDepth = 10)
     {
-        for (var i = 0; i < lines.Length || i < 10; i++)
+        for (var i = 0; i < lines.Length || i < maxDepth; i++)
         {
-            if (lines[i].Contains("EXT-X-KEY"))
-                return true;
+            if (lines[i].Contains(toFind))
+                return i;
         }
-        return false;
+        return -1;
     }
+    private static async Task<byte[]?> GetKey(string keyUrl)
+    {
+        try
+        {
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(keyUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var key = await response.Content.ReadAsByteArrayAsync();
+
+                Console.WriteLine($"Key: {BitConverter.ToString(key)}");
+                // The key should be 16 bytes for AES-128
+                if (key.Length == 16) return key;
+
+                throw new Exception("Invalid key length. The key length should be 16 bytes for AES-128 encryption.");
+            }
+            
+            throw new Exception($"Failed to fetch encryption key. Status code {response.StatusCode}");
+        }catch(Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
+        
+    }
+
 }
