@@ -6,7 +6,7 @@ public static class AfterReceive
     {
         foreach (var header in CorsBlockedHeaders.List) hrm.Headers.Remove(header.ToLower());
     }
-    
+
     public static void AddForcedHeaders(Dictionary<string, string>? forcedHeadersProxyDictionary,
         HttpResponseMessage hrm)
     {

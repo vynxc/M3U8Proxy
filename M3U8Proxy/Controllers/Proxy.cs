@@ -37,12 +37,11 @@ public partial class Proxy : Controller
                 .WithShouldAddForwardedHeaders(false)
                 .WithBeforeSend((_, hrm) =>
                 {
-                    
                     if (headersDictionary == null) return Task.CompletedTask;
                     BeforeSend.RemoveHeaders(hrm);
                     BeforeSend.AddHeaders(headersDictionary, hrm);
                     hrm.Headers.Remove("Host");
-                    
+
                     return Task.CompletedTask;
                 })
                 .WithHandleFailure(async (context, e) =>
@@ -55,7 +54,7 @@ public partial class Proxy : Controller
                     AfterReceive.RemoveHeaders(hrm);
                     AfterReceive.AddForcedHeaders(forcedHeadersProxyDictionary, hrm);
                     hrm.Headers.Remove("Cross-Origin-Resource-Policy");
-                    hrm.Headers.Add("Cross-Origin-Resource-Policy","*");
+                    hrm.Headers.Add("Cross-Origin-Resource-Policy", "*");
                     return Task.CompletedTask;
                 })
                 .Build();
@@ -86,7 +85,7 @@ public partial class Proxy : Controller
             var client = new HttpClient(_handler);
             client.Timeout = TimeSpan.FromMinutes(15);
             var request = new HttpRequestMessage(HttpMethod.Get, url);
-            
+
             if (headersDictionary != null)
                 foreach (var keyValuePair in headersDictionary)
                     request.Headers.Add(keyValuePair.Key, keyValuePair.Value);
@@ -97,7 +96,7 @@ public partial class Proxy : Controller
 
             return Ok(new
             {
-                url = redirectedUrl!=null? _baseUrl+redirectedUrl : null,
+                url = redirectedUrl != null ? _baseUrl + redirectedUrl : null
             });
         }
         catch (Exception e)

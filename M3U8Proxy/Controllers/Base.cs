@@ -68,9 +68,9 @@ public class Base : Controller
     [Route("/video/intro.ts")]
     public IActionResult Intro(string? key)
     {
-        Console.WriteLine("key "+key);
-        if(key != null) return File(IntroEncrypt(FromHexString(key)),"video/mp2t");
-        
+        Console.WriteLine("key " + key);
+        if (key != null) return File(IntroEncrypt(FromHexString(key)), "video/mp2t");
+
         var resourceName = "M3U8Proxy.Intro.segment0.ts";
         var stream = _assembly.GetManifestResourceStream(resourceName);
 
@@ -79,12 +79,12 @@ public class Base : Controller
         return NotFound();
     }
 
-    
+
     private MemoryStream IntroEncrypt(byte[] key)
     {
         var resourceName = "M3U8Proxy.Intro.segment0.ts";
         var stream = _assembly.GetManifestResourceStream(resourceName);
-        
+
         var encryptedStream = new MemoryStream();
         EncryptStream(stream, encryptedStream, key, 0); // Sequence number is 0.
         encryptedStream.Position = 0; // Reset position.
@@ -94,13 +94,11 @@ public class Base : Controller
     private byte[] FromHexString(string hexString)
     {
         var numberChars = hexString.Length;
-        byte[] bytes = new byte[numberChars / 2];
-        for (int i = 0; i < numberChars; i += 2)
-        {
-            bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
-        }
+        var bytes = new byte[numberChars / 2];
+        for (var i = 0; i < numberChars; i += 2) bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
         return bytes;
     }
+
     private void EncryptStream(Stream inputStream, Stream outputStream, byte[] Key, long sequenceNumber)
     {
         // Check arguments. 

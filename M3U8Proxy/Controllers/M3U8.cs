@@ -20,6 +20,7 @@ public partial class Proxy
     private readonly string _baseUrl;
     private readonly string _m3U8Url;
     private readonly string _encryptedUrl;
+
     public Proxy(IConfiguration configuration)
     {
         _baseUrl = configuration["ProxyUrl"]!;
@@ -38,8 +39,8 @@ public partial class Proxy
     {
         return await GetM3U8(url, headers, forcedHeadersProxy);
     }
-    
-    
+
+
     [OutputCache(PolicyName = "m3u8")]
     [HttpHead]
     [HttpGet]
@@ -48,22 +49,22 @@ public partial class Proxy
         [FromQuery] string? forcedHeadersProxy = "{}")
     {
         var url = Decrypt(encryptedUrl);
-        return await GetM3U8(url, headers,forcedHeadersProxy,true);
+        return await GetM3U8(url, headers, forcedHeadersProxy, true);
     }
-    
+
     public string Encrypt(string data)
     {
         return Uri.EscapeDataString(AES.Encrypt(data));
     }
-    
+
     public string Decrypt(string encryptedData)
     {
         return AES.Decrypt(Uri.UnescapeDataString(encryptedData));
     }
+
     public async Task<IActionResult> GetM3U8(string url, string? headers = "{}",
-        [FromQuery] string? forcedHeadersProxy = "{}",bool encrypted = false)
+        [FromQuery] string? forcedHeadersProxy = "{}", bool encrypted = false)
     {
-        
         try
         {
             url = HttpUtility.UrlDecode(url);
@@ -86,12 +87,13 @@ public partial class Proxy
             var headersString = headers == "{}" ? "" : Uri.EscapeDataString(headers!);
             var suffix = headersString + forcedHeadersString;
             if (suffix != "") suffix = "/" + suffix;
-            var prefix =isPlaylistM3U8 ? _m3U8Url : _proxyUrl;
-            
-            if(encrypted&&isPlaylistM3U8)
+            var prefix = isPlaylistM3U8 ? _m3U8Url : _proxyUrl;
+
+            if (encrypted && isPlaylistM3U8)
                 prefix = _encryptedUrl;
-            
-            var finalContent = M3U8Paser.FixAllUrls(lines, url, prefix, suffix,encrypted,isPlaylistM3U8,_baseUrl);
+
+            var finalContent =
+                M3U8Parser.M3U8Parser.FixAllUrls(lines, url, prefix, suffix, encrypted, isPlaylistM3U8, _baseUrl);
 
             return File(Encoding.UTF8.GetBytes(finalContent), "application/vnd.apple.mpegurl",
                 $"{GenerateRandomId(10)}.m3u8");
@@ -100,11 +102,9 @@ public partial class Proxy
         {
             return BadRequest(JsonConvert.SerializeObject(e));
         }
-
     }
 
-    
-    
+
     private bool IsPlaylistM3U8(string[] lines)
     {
         var isPlaylistM3U8 = false;

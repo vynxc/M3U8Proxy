@@ -3,24 +3,24 @@ using System.Text;
 
 namespace M3U8Proxy;
 
-class AES
+internal class AES
 {
     private static readonly string KeyString = "anifydobesupercoolbrodudeawesome";
 
     public static string Encrypt(string plainText)
     {
         byte[] cipherData;
-        Aes aes = Aes.Create();
+        var aes = Aes.Create();
         aes.Key = Encoding.UTF8.GetBytes(KeyString);
         aes.GenerateIV();
         aes.Mode = CipherMode.CBC;
-        ICryptoTransform cipher = aes.CreateEncryptor(aes.Key, aes.IV);
+        var cipher = aes.CreateEncryptor(aes.Key, aes.IV);
 
-        using (MemoryStream ms = new MemoryStream())
+        using (var ms = new MemoryStream())
         {
-            using (CryptoStream cs = new CryptoStream(ms, cipher, CryptoStreamMode.Write))
+            using (var cs = new CryptoStream(ms, cipher, CryptoStreamMode.Write))
             {
-                using (StreamWriter sw = new StreamWriter(cs))
+                using (var sw = new StreamWriter(cs))
                 {
                     sw.Write(plainText);
                 }
@@ -29,7 +29,7 @@ class AES
             cipherData = ms.ToArray();
         }
 
-        byte[] combinedData = new byte[aes.IV.Length + cipherData.Length];
+        var combinedData = new byte[aes.IV.Length + cipherData.Length];
         Array.Copy(aes.IV, 0, combinedData, 0, aes.IV.Length);
         Array.Copy(cipherData, 0, combinedData, aes.IV.Length, cipherData.Length);
         return Convert.ToBase64String(combinedData);
@@ -38,22 +38,22 @@ class AES
     public static string Decrypt(string combinedString)
     {
         string plainText;
-        byte[] combinedData = Convert.FromBase64String(combinedString);
-        Aes aes = Aes.Create();
+        var combinedData = Convert.FromBase64String(combinedString);
+        var aes = Aes.Create();
         aes.Key = Encoding.UTF8.GetBytes(KeyString);
-        byte[] iv = new byte[aes.BlockSize / 8];
-        byte[] cipherText = new byte[combinedData.Length - iv.Length];
+        var iv = new byte[aes.BlockSize / 8];
+        var cipherText = new byte[combinedData.Length - iv.Length];
         Array.Copy(combinedData, iv, iv.Length);
         Array.Copy(combinedData, iv.Length, cipherText, 0, cipherText.Length);
         aes.IV = iv;
         aes.Mode = CipherMode.CBC;
-        ICryptoTransform decipher = aes.CreateDecryptor(aes.Key, aes.IV);
+        var decipher = aes.CreateDecryptor(aes.Key, aes.IV);
 
-        using (MemoryStream ms = new MemoryStream(cipherText))
+        using (var ms = new MemoryStream(cipherText))
         {
-            using (CryptoStream cs = new CryptoStream(ms, decipher, CryptoStreamMode.Read))
+            using (var cs = new CryptoStream(ms, decipher, CryptoStreamMode.Read))
             {
-                using (StreamReader sr = new StreamReader(cs))
+                using (var sr = new StreamReader(cs))
                 {
                     plainText = sr.ReadToEnd();
                 }

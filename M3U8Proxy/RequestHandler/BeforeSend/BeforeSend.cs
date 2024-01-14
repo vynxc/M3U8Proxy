@@ -6,6 +6,7 @@ public static class BeforeSend
     {
         foreach (var header in CorsBlockedHeaders.List) hrm.Headers.Remove(header.ToLower());
     }
+
     public static void AddHeaders(Dictionary<string, string> headersDictionary, HttpRequestMessage hrm)
     {
         foreach (var header in headersDictionary)

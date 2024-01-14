@@ -4,17 +4,16 @@ using YoutubeExplode.Videos.Streams;
 
 namespace M3U8Proxy.Controllers;
 
-
-public class Youtube: Controller
+public class Youtube : Controller
 {
-    private static readonly YoutubeClient YoutubeClient = new ();
+    private static readonly YoutubeClient YoutubeClient = new();
 
     [HttpGet]
     [Route("youtube/{**id}")]
     public async Task<IActionResult> GetTrailer(string id)
     {
         var url = $"https://www.youtube.com/watch?v={id}";
-    
+
         var streamManifest = await YoutubeClient.Videos.Streams.GetManifestAsync(url);
         var streamInfo = streamManifest
             .GetMuxedStreams()
@@ -23,7 +22,7 @@ public class Youtube: Controller
         var stream = await YoutubeClient.Videos.Streams.GetAsync(streamInfo);
 
         var streamLength = (int)streamInfo.Size.Bytes;
-                
+
         Response.Headers["Content-Type"] = "video/mp4";
         Response.Headers["Content-Disposition"] = $"attachment; filename=\"{id}.mp4\"";
         Response.Headers["Accept-Ranges"] = "bytes";
@@ -31,7 +30,4 @@ public class Youtube: Controller
 
         return File(stream, "video/mp4");
     }
-
-
-
 }

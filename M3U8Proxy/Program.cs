@@ -17,20 +17,18 @@ builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddProxies();
-var allowedOrigins =builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(myAllowSpecificOrigins,
         policyBuilder =>
-        {   
+        {
             Console.WriteLine(allowedOrigins);
             if (allowedOrigins != null)
-            {
                 policyBuilder.WithOrigins(allowedOrigins);
-                
-            }else{policyBuilder.AllowAnyOrigin();
-            }
+            else
+                policyBuilder.AllowAnyOrigin();
         });
 });
 
@@ -39,8 +37,7 @@ app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseRouting();
 app.UseCors(myAllowSpecificOrigins);
 app.UseOutputCache();
-app.MapGet("/hello", async context => {
-    await context.Response.WriteAsync("Hello, Bitches!"); });
+app.MapGet("/hello", async context => { await context.Response.WriteAsync("Hello, Bitches!"); });
 app.UseAuthentication();
 app.MapControllers();
 app.Run();

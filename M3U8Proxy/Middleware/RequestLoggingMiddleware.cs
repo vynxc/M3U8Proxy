@@ -25,22 +25,20 @@ public class RequestLoggingMiddleware
     }
 
     private void LogRequestInfo(HttpContext context)
-{
-    context.Request.Headers.TryGetValue("Origin", out var origin);
-    context.Request.Headers.TryGetValue("Referer", out var referer);
-    var url = context.Request.Path + context.Request.QueryString;
-    var ipAddress = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()??"no ip";
-    
-    _logger.LogInformation($"IPv4 Address: {ipAddress}");
+    {
+        context.Request.Headers.TryGetValue("Origin", out var origin);
+        context.Request.Headers.TryGetValue("Referer", out var referer);
+        var url = context.Request.Path + context.Request.QueryString;
+        var ipAddress = context.Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? "no ip";
 
-    if (origin.Count > 0)
-        _logger.LogInformation($"Origin: {origin}");
+        _logger.LogInformation($"IPv4 Address: {ipAddress}");
 
-    if (referer.Count > 0)
-        _logger.LogInformation($"Referer: {referer}");
+        if (origin.Count > 0)
+            _logger.LogInformation($"Origin: {origin}");
 
-    _logger.LogInformation($"URL: {url}");
-}
+        if (referer.Count > 0)
+            _logger.LogInformation($"Referer: {referer}");
 
-
+        _logger.LogInformation($"URL: {url}");
+    }
 }
