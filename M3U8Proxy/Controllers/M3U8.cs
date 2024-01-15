@@ -109,7 +109,7 @@ public partial class Proxy
     {
         var isPlaylistM3U8 = false;
 
-        for (var i = 0; i < lines.Length || i < 10; i++)
+        for (var i = 0; i < lines.Length && i < 10; i++)
         {
             for (var j = 0; j < _listOfKeywords.Count; j++)
             {
