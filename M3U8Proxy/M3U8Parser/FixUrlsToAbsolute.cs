@@ -87,11 +87,16 @@ public partial class M3U8Parser
         return lines;
     }
 
+    
     private static int ContainsString(string[] lines, string toFind, int maxDepth = 10)
     {
-        for (var i = 0; i < lines.Length || i < maxDepth; i++)
+        for (var i = 0; i < lines.Length && i < maxDepth; i++)
+        {
             if (lines[i].Contains(toFind))
+            {
                 return i;
+            }
+        }
         return -1;
     }
 
