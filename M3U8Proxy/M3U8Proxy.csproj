@@ -26,7 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Intro\segment0.ts"/>
+        <EmbeddedResource Include="Intro\intro.ts"/>
     </ItemGroup>
 
 

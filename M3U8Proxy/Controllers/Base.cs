@@ -68,10 +68,9 @@ public class Base : Controller
     [Route("/video/intro.ts")]
     public IActionResult Intro(string? key)
     {
-        Console.WriteLine("key " + key);
         if (key != null) return File(IntroEncrypt(FromHexString(key)), "video/mp2t");
-
-        var resourceName = "M3U8Proxy.Intro.segment0.ts";
+        Console.WriteLine("key is null");
+        var resourceName = "M3U8Proxy.Intro.intro.ts";
         var stream = _assembly.GetManifestResourceStream(resourceName);
 
         if (stream != null) return File(stream, "video/mp2t");
@@ -82,7 +81,7 @@ public class Base : Controller
 
     private MemoryStream IntroEncrypt(byte[] key)
     {
-        var resourceName = "M3U8Proxy.Intro.segment0.ts";
+        var resourceName = "M3U8Proxy.Intro.intro.ts";
         var stream = _assembly.GetManifestResourceStream(resourceName);
 
         var encryptedStream = new MemoryStream();
